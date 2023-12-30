@@ -3,6 +3,7 @@ package com.example.springintroduction.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 // MVC Pattern (Model - View - Model)
 // @Controller annotation을 사용하면 해당 클래스를 Controller로서 사용하도록 해줌
@@ -21,5 +22,13 @@ public class HelloController {
         /* 컨트롤러에서 리턴 값으로 문자를 반환하면 뷰 리졸버(viewResolver)가 화면을 찾아서 처리한다
         *  스프링 부트 탬플릿엔진 기본 viewName 매핑(resources - templates - hello.html)
         *  resources:templates/ + (ViewName) + '.html'*/
+    }
+
+    // 외부에서 url parameter로 name을 전달받음 => String name
+    @GetMapping("hello-mvc")
+    public String helloMVC(@RequestParam("name") String name, Model model){
+        model.addAttribute("name",name); // "name" 키로 데이터 전달
+        // 뷰 리졸버를 통해 hello-template.html을 찾아 화면을 렌더링한다.
+        return "hello-template";
     }
 }

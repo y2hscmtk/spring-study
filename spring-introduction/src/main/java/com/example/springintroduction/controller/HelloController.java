@@ -24,9 +24,15 @@ public class HelloController {
         *  resources:templates/ + (ViewName) + '.html'*/
     }
 
-    // 외부에서 url parameter로 name을 전달받음 => String name
+    // 외부에서 url parameter로 name을 전달받음
+    // @RequestParam("name") String name => String name은 외부에서 파라미터로 전달받을 값이라는 의미?
+    // Command + p => 파라미터 정보 보기
+
+    // 예시 : 파라미터로 name = spring! 을 전달하는 사례
+    // locallhost:8080/hello-mvc?name=spring!
+
     @GetMapping("hello-mvc")
-    public String helloMVC(@RequestParam("name") String name, Model model){
+    public String helloMVC(@RequestParam(value = "name", required = false) String name, Model model){
         model.addAttribute("name",name); // "name" 키로 데이터 전달
         // 뷰 리졸버를 통해 hello-template.html을 찾아 화면을 렌더링한다.
         return "hello-template";

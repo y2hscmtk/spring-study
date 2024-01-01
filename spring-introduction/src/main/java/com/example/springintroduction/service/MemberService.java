@@ -7,9 +7,14 @@ import com.example.springintroduction.repository.MemoryMemberRepository;
 import java.util.List;
 import java.util.Optional;
 
+// Command + Shift + T => 테스트 케이스 바로 만들기
 public class MemberService {
 
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
+    private final MemberRepository memberRepository;
+
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     /**
      * 회원 가입

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th> </tr>
+            </thead>
+            <tbody>
+            <!--thymleaf의 th:each 문법에 의해 값이 자동으로 매핑되어 랜더링됨(반복적으로)-->
+            <!--Controller에서 members라는 키 값으로 전달 받은 배열의 개수만큼 그려준다.-->
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td th:text="${member.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div> <!-- /container -->
+</body>
+</html> ```

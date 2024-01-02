@@ -4,8 +4,11 @@ import com.example.springintroduction.domain.Member;
 import com.example.springintroduction.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class MemberController {
@@ -56,5 +59,14 @@ public class MemberController {
         memberService.join(member);
 
         return "redirect:/"; // 시작화면으로 되돌리기
+    }
+
+    // 회원 조회
+    @GetMapping("/members")
+    public String list(Model model){
+        List<Member> members = memberService.findMembers();
+        // members 라는 키 값으로 뷰 탬플릿에 데이터 전달
+        model.addAttribute("members", members);
+        return "members/memberList";
     }
 }

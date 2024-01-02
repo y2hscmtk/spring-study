@@ -1,8 +1,11 @@
 package com.example.springintroduction.controller;
 
+import com.example.springintroduction.domain.Member;
 import com.example.springintroduction.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MemberController {
@@ -35,7 +38,23 @@ public class MemberController {
 //    public void setMemberService(MemberService memberService){
 //        this.memberService = memberService;
 //    }
-
-
     // => 기본적으로 런타임에서 변경될 일은 거의 없으므로, 생성자 주입을 권장한다.
+
+    // 회원 등록
+    @GetMapping("/members/new")
+    public String createForm(){
+        return "members/createMemberForm";
+    }
+
+    // 데이터 전달 받기
+    // MemberForm의 name 변수에 값이 삽입됨
+    @PostMapping("/members/new")
+    public String create(MemberForm form) {
+        Member member = new Member();
+        member.setName(form.getName());
+
+        memberService.join(member);
+
+        return "redirect:/"; // 시작화면으로 되돌리기
+    }
 }

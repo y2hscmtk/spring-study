@@ -1,9 +1,11 @@
 package com.example.springintroduction.repository;
 
 import com.example.springintroduction.domain.Member;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Repository
 // Option + Enter => implements all methods
 public class MemoryMemberRepository implements MemberRepository {
 

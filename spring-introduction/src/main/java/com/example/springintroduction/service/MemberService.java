@@ -2,16 +2,21 @@ package com.example.springintroduction.service;
 
 import com.example.springintroduction.domain.Member;
 import com.example.springintroduction.repository.MemberRepository;
-import com.example.springintroduction.repository.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 // Command + Shift + T => 테스트 케이스 바로 만들기
+// 싱글톤 객체로 스프링 컨테이너에 등록하기 위해 스프링 빈으로 등록해야 한다.
+@Service // Service annotation을 통해 스프링에게 스프링 빈 객체임을 알린다.
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
+
+    @Autowired // 스프링 컨테이너에 스프링 빈으로 등록된 memberRepository 를 찾아서 의존관계로 설정
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }

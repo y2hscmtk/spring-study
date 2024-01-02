@@ -20,4 +20,22 @@ public class MemberController {
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
+
+    // 의존관계 주입 방법
+
+    // 1. 필드 주입
+    // @Autowired private final MemberService memberService;
+    // 2. 생성자 주입
+//    @Autowired // 스프링 컨테이너에서 memberService를 가져온다. (memberService또한 스프링 빈으로 등록되어있어야한다.)
+//    public MemberController(MemberService memberService) {
+//        this.memberService = memberService;
+//    }
+    // 3. Setter 주입
+//    @Autowired
+//    public void setMemberService(MemberService memberService){
+//        this.memberService = memberService;
+//    }
+
+
+    // => 기본적으로 런타임에서 변경될 일은 거의 없으므로, 생성자 주입을 권장한다.
 }

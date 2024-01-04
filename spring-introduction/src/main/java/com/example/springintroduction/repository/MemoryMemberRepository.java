@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Repository
+//@Repository
 // Option + Enter => implements all methods
 public class MemoryMemberRepository implements MemberRepository {
 

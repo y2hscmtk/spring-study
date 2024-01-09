@@ -1,15 +1,23 @@
 package spring.springcorebasic.member;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import spring.springcorebasic.AppConfig;
 
 public class MemberServiceTest {
+    MemberService memberService;
 
-    MemberService memberService = new MemberServiceImpl();
+    @BeforeEach
+    public void beforeEach() {
+        AppConfig appConfig = new AppConfig();
+        memberService = appConfig.memberService();
+    }
 
     // Test Case를 쉽게 작성하기 위한 로직 given-when-then
     @Test
     void join() {
+
         // given 이런 환경이 주어졌을때
         // 새로운 유저가 있을때
         Member member = new Member(1L, "choi", Grade.VIP);

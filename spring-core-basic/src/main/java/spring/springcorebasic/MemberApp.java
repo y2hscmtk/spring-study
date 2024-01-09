@@ -8,7 +8,11 @@ import spring.springcorebasic.member.MemberServiceImpl;
 public class MemberApp {
 
     public static void main(String[] args) {
-        MemberService memberService = new MemberServiceImpl();
+        //MemberService memberService = new MemberServiceImpl();
+
+        AppConfig appConfig = new AppConfig();
+        MemberService memberService = appConfig.memberService(); // appConfig을 통해 의존성 주입하도록 변경
+
         Member member = new Member(1L, "memberA", Grade.VIP);
         memberService.join(member);
 

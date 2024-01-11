@@ -2,6 +2,7 @@ package spring.springcorebasic.singletom;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import spring.springcorebasic.AppConfig;
 import spring.springcorebasic.member.MemberService;
 
@@ -43,5 +44,22 @@ public class SingletonTest {
         assertThat(singletonService1).isSameAs(singletonService2);
         // isEqual : 내부까지 전부 같은지 확인
         // isSame : 인스턴스가 같은지 비교
+    }
+
+    @Test
+    @DisplayName("스프링 컨테이너와 싱글톤")
+    void springContainer() {
+        // 스프링 컨테이너는 구성정보(AppConfig.class)를 바탕으로 싱글톤 객체를 생성하여 스프링 빈으로 등록한다.
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        MemberService memberService1 = ac.getBean("memberService", MemberService.class);
+        MemberService memberService2 = ac.getBean("memberService", MemberService.class);
+
+        // 참조 값이 같은 것을 확인
+        System.out.println("memberService1 = " + memberService1);
+        System.out.println("memberService2 = " + memberService2);
+
+        // memberService1 == memberService2
+        assertThat(memberService1).isSameAs(memberService2);
     }
 }

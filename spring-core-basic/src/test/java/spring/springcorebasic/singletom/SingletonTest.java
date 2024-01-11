@@ -1,11 +1,11 @@
 package spring.springcorebasic.singletom;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import spring.springcorebasic.AppConfig;
 import spring.springcorebasic.member.MemberService;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingletonTest {
 
@@ -25,9 +25,23 @@ public class SingletonTest {
 
         // 검증
         // memberService1 != memberService2
-        Assertions.assertThat(memberService1).isNotSameAs(memberService2);
+        assertThat(memberService1).isNotSameAs(memberService2);
 
         // => 스프링을 사용하지 않는 순수한 DI 컨테이너는 요청할 때마다 객체를 새로 생성한다.
         // => 메모리 낭비가 심하다! => 해결 방안은 싱글톤 패턴을 적용하는 것
+    }
+
+    @Test
+    @DisplayName("싱글톤 패턴을 적용한 객체 사용")
+    void singletonServiceTest() {
+        SingletonService singletonService1 = SingletonService.getInstance();
+        System.out.println("singletonService1 = " + singletonService1);
+        SingletonService singletonService2 = SingletonService.getInstance();
+        System.out.println("singletonService2 = " + singletonService2);
+
+        // => 같은 인스턴스를 반환하는 것을 확인 할 수 있다.
+        assertThat(singletonService1).isSameAs(singletonService2);
+        // isEqual : 내부까지 전부 같은지 확인
+        // isSame : 인스턴스가 같은지 비교
     }
 }

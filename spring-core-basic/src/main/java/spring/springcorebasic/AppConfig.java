@@ -19,12 +19,14 @@ public class AppConfig {
     // 멤버 서비스 역할 배정
     @Bean // => 스프링 컨테이너에 등록
     public MemberService memberService() {
+        System.out.println("call AppConfig.memberService");
         // Command + Option + m => 부분 함수화
         return new MemberServiceImpl(memberRepository());
     }
 
     @Bean
     private static MemoryMemberRepository memberRepository() {
+        System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
     }
 
@@ -32,11 +34,13 @@ public class AppConfig {
     // DIP를 만족하도록 OrderServiceImpl을 생성자 주입으로 의존관계 주입 설정
     @Bean
     public OrderService orderService() {
+        System.out.println("call AppConfig.orderService");
         return new OrderServiceImpl(memberRepository(),discountPolicy());
     }
 
     @Bean
     public DiscountPolicy discountPolicy() {
+        System.out.println("call AppConfig.discountPolicy");
         //return new FixDiscountPolicy();
         return new RateDiscountPolicy(); // 할인 정책 변경시, 이정도의 코드 수정으로 충분하다.
     }

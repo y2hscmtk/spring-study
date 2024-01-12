@@ -1,4 +1,4 @@
-package spring.springcorebasic.singletom;
+package spring.springcorebasic.singleton;
 
 public class StatefulService {
 

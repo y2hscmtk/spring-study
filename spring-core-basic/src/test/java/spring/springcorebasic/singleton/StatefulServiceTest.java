@@ -1,12 +1,8 @@
-package spring.springcorebasic.singletom;
+package spring.springcorebasic.singleton;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-
-import javax.swing.plaf.PanelUI;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class StatefulServiceTest {
 

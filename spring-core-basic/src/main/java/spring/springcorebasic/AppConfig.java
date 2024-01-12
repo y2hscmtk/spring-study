@@ -3,7 +3,6 @@ package spring.springcorebasic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import spring.springcorebasic.discount.DiscountPolicy;
-import spring.springcorebasic.discount.FixDiscountPolicy;
 import spring.springcorebasic.discount.RateDiscountPolicy;
 import spring.springcorebasic.member.MemberService;
 import spring.springcorebasic.member.MemberServiceImpl;
@@ -25,7 +24,7 @@ public class AppConfig {
     }
 
     @Bean
-    private static MemoryMemberRepository memberRepository() {
+    public MemoryMemberRepository memberRepository() {
         System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
     }

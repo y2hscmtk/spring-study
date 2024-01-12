@@ -1,8 +1,12 @@
 package spring.springcorebasic.member;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 // 관례상 구현체는 인터페이스 이름 + Impl
 // 새로운 회원을 가입(join)하고, 조회(findMember)하는 기능 구현 필요
 // 위 기능을 위해 저장소(MemberRepository)에 대한 참조가 필요
+@Component // 컴포넌트 스캔 대상으로 설정
 public class MemberServiceImpl implements MemberService{
 
     // new 키워드를 사용하여 인터페이스에 대한 구현체 설정
@@ -12,6 +16,7 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository; // DIP 만족을 위해
 
+    @Autowired // 의존관계 자동주입(컴포넌트 스캔시) == ac.getBean(MemberRepository.class)
     // 생성자 주입
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;

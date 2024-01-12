@@ -1,10 +1,13 @@
 package spring.springcorebasic.member;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
 // 개발단계에서 테스트 하기 위한 메모리 저장소
 // 데이터베이스에 저장하는 것이 아니기 때문에 서버가 종료되면 초기화된다.
+@Component // 컴포넌트 스캔 대상으로 설정
 public class MemoryMemberRepository implements MemberRepository{
     private static Map<Long, Member> store = new HashMap<>();
 

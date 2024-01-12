@@ -1,12 +1,12 @@
 package spring.springcorebasic.order;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import spring.springcorebasic.discount.DiscountPolicy;
-import spring.springcorebasic.discount.FixDiscountPolicy;
-import spring.springcorebasic.discount.RateDiscountPolicy;
 import spring.springcorebasic.member.Member;
 import spring.springcorebasic.member.MemberRepository;
-import spring.springcorebasic.member.MemoryMemberRepository;
 
+@Component // 컴포넌트 스캔 대상으로 설정
 public class OrderServiceImpl implements OrderService{
 
     // 회원의 등급을 확인하기 위함 => 할인정책 적용을 위해
@@ -17,7 +17,8 @@ public class OrderServiceImpl implements OrderService{
     // new 키워드를 사용하여 구현체를 직접 의존관계로 설정해주었기 때문에, 추상에 의존하지 않고 구현에 의존함으로서 DIP를 위반한다.
     private final DiscountPolicy discountPolicy;
 
-    // 생성자 주입
+    @Autowired // 의존관계 자동 주입 // 생성자 주입
+    // Autowired 를 사용하면, 스프링 컨테이너에서 동일한 '타입'의 인스턴스를 찾아 의존관계를 주입한다.
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;

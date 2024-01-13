@@ -10,7 +10,7 @@ import spring.springcorebasic.member.MemberRepository;
 public class OrderServiceImpl implements OrderService{
 
     // 회원의 등급을 확인하기 위함 => 할인정책 적용을 위해
-    private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository; // 생성자 주입의 장점 => final 키워드 사용 가능(수정 불가)
     //private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
 
     // 현재 상황에서 할인 정책을 변경하려면 실제 소스코드(구현체)를 변경해야한다.

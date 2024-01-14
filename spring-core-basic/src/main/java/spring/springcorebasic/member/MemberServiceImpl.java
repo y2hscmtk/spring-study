@@ -16,7 +16,7 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository; // DIP 만족을 위해
 
-    @Autowired // 의존관계 자동주입(컴포넌트 스캔시) == ac.getBean(MemberRepository.class)
+    //@Autowired // 의존관계 자동주입(컴포넌트 스캔시) == ac.getBean(MemberRepository.class) => 생성자 1개일 경우 생략 가능
     // 생성자 주입
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;

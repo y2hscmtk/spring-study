@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import spring.springcorebasic.annotation.MainDiscountPolicy;
 import spring.springcorebasic.discount.DiscountPolicy;
 import spring.springcorebasic.member.Member;
 import spring.springcorebasic.member.MemberRepository;
@@ -23,7 +24,8 @@ public class OrderServiceImpl implements OrderService{
 
     // Autowired 를 사용하면, 스프링 컨테이너에서 동일한 '타입'의 인스턴스를 찾아 의존관계를 주입한다.
     @Autowired // 의존관계 자동 주입 // 생성자 주입
-    public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository,
+                            @MainDiscountPolicy DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }

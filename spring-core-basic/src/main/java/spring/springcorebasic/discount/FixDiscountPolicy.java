@@ -1,9 +1,13 @@
 package spring.springcorebasic.discount;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import spring.springcorebasic.member.Grade;
 import spring.springcorebasic.member.Member;
 
 // 무조건 1000원을 할인해주는 정책
+@Component // Fix와 Rate 모두 스프링 빈으로 등록한 상황 (조회하는 빈이 2개 이상)
+@Qualifier("mainDiscountPolicy") // Qualifier는 조회할 빈이 여러개일때 추가 구분자를 지정한다. 같은 구분자끼리 연결된다.(OrderServiceImpl)
 public class FixDiscountPolicy implements DiscountPolicy{
     private int discountFixAmount = 1000; // 1000원으로 고정할인
     @Override

@@ -2,13 +2,14 @@ package spring.springcorebasic.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import spring.springcorebasic.discount.DiscountPolicy;
 import spring.springcorebasic.member.Member;
 import spring.springcorebasic.member.MemberRepository;
 
 @Component // 컴포넌트 스캔 대상으로 설정
-@RequiredArgsConstructor // final 키워드가 붙은 매개변수를 대상으로 생성자를 자동으로 만들어준다.(final = Required)
+// @RequiredArgsConstructor // final 키워드가 붙은 매개변수를 대상으로 생성자를 자동으로 만들어준다.(final = Required)
 // 롬복이 자바의 어노테이션 프로세서 기능을 이용하여 컴파일 시점에 생성자 코드를 자동으로 생성한다.
 public class OrderServiceImpl implements OrderService{
 
@@ -20,12 +21,12 @@ public class OrderServiceImpl implements OrderService{
     // new 키워드를 사용하여 구현체를 직접 의존관계로 설정해주었기 때문에, 추상에 의존하지 않고 구현에 의존함으로서 DIP를 위반한다.
     private final DiscountPolicy discountPolicy;
 
-//    @Autowired // 의존관계 자동 주입 // 생성자 주입
-//    // Autowired 를 사용하면, 스프링 컨테이너에서 동일한 '타입'의 인스턴스를 찾아 의존관계를 주입한다.
-//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-//        this.memberRepository = memberRepository;
-//        this.discountPolicy = discountPolicy;
-//    }
+    // Autowired 를 사용하면, 스프링 컨테이너에서 동일한 '타입'의 인스턴스를 찾아 의존관계를 주입한다.
+    @Autowired // 의존관계 자동 주입 // 생성자 주입
+    public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {

@@ -5,7 +5,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spring.springcorebasic.member.Grade;
 import spring.springcorebasic.member.Member;
 import spring.springcorebasic.member.MemberService;
-import spring.springcorebasic.member.MemberServiceImpl;
 
 public class MemberApp {
 

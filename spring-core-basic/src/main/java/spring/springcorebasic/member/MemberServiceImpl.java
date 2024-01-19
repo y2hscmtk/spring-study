@@ -1,6 +1,5 @@
 package spring.springcorebasic.member;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 // 관례상 구현체는 인터페이스 이름 + Impl

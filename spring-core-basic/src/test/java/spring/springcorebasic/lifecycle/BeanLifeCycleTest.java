@@ -34,7 +34,8 @@ public class BeanLifeCycleTest {
         // 3. @PoistConstruct, @PreDestory 애노테이션 지원
 
         // 빈 등록 초기화, 소멸 메소드 지정(networkClient에 init, close라는 이름의 함수를 등록)
-        @Bean(initMethod = "init", destroyMethod = "close")
+        //@Bean(initMethod = "init", destroyMethod = "close")
+        @Bean
         public NetworkClient networkClient() {
             NetworkClient networkClient = new NetworkClient();
             networkClient.setUrl("https://hello-spring.dev");

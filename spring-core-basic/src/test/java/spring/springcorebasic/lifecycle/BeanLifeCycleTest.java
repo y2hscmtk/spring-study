@@ -1,4 +1,4 @@
-package lifecycle;
+package spring.springcorebasic.lifecycle;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -32,7 +32,9 @@ public class BeanLifeCycleTest {
         // 1. 인터페이스
         // 2. 설정정보에 초기화 메서드, 종료 메서드 지정
         // 3. @PoistConstruct, @PreDestory 애노테이션 지원
-        @Bean
+
+        // 빈 등록 초기화, 소멸 메소드 지정(networkClient에 init, close라는 이름의 함수를 등록)
+        @Bean(initMethod = "init", destroyMethod = "close")
         public NetworkClient networkClient() {
             NetworkClient networkClient = new NetworkClient();
             networkClient.setUrl("https://hello-spring.dev");

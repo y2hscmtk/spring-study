@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -37,21 +38,28 @@ public class SingletonWithPrototypeTest1 {
 
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
         int count2 = clientBean2.logic();
-        assertThat(count2).isEqualTo(2);
+        assertThat(count2).isEqualTo(1);
         // ClientBean은 싱글톤이기때문에, 내부의 프로토타입 빈 또한 생성시점에 주입되어 계속 같은 인스턴스를 사용하게 된다.
         // 의도한 바와 달리, 프로토타입 빈이 새롭게 생성되지 않음
     }
 
     @Scope("singleton")
     static class ClientBean {
-        private final PrototypeBean prototypeBean; // 생성 시점에 주입됨 => 계속 같은 인스턴스를 사용하게됨
+        //private final PrototypeBean prototypeBean; // 생성 시점에 주입됨 => 계속 같은 인스턴스를 사용하게됨
 
         @Autowired
-        public ClientBean(PrototypeBean prototypeBean) {
-            this.prototypeBean = prototypeBean;
-        }
+        private ObjectProvider<PrototypeBean> prototypeBeansProvider;
+        // => ObjectProvider의 getObject를 호출하면 내부에서는 스프링 컨테이너를 사용하여 해당 빈을 찾아서 반환한다.
+        // => DL 기능을 지원한다. => 스프링 종속적이다.
+        // == Provider<PrototypeBean> prototypeBeanProvider; // => javax inject => 자바 표준
+
+        //@Autowired
+//        public ClientBean(PrototypeBean prototypeBean) {
+//            this.prototypeBean = prototypeBean;
+//        }
 
         public int logic() {
+            PrototypeBean prototypeBean = prototypeBeansProvider.getObject();
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;

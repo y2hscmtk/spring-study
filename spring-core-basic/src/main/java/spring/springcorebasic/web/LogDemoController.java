@@ -16,13 +16,16 @@ public class LogDemoController {
     //private final MyLogger myLogger;
     // 현재 request 스콥으로 웹스코프 빈으로 설정되어있음 => 요청이 들어와야 생성이됨 => RequireArgsConstructor 오류발생
     // => 없는 빈을 내놓으라고 하기 때문이다.
-    // => Provider를 사용하여 해결 가능
-    private final ObjectProvider<MyLogger> myLoggersProvider;
+    // 해결방법
+    // 1. Provider를 사용하여 해결 가능
+    // private final ObjectProvider<MyLogger> myLoggersProvider;
+    // 2. 프록시를 사용하여 해결 가능
+    private final MyLogger myLogger;
 
     @RequestMapping("log-demo")
     @ResponseBody
     public String logDemo(HttpServletRequest request) {
-        MyLogger myLogger = myLoggersProvider.getObject();
+        //MyLogger myLogger = myLoggersProvider.getObject(); => 해결방법 1
         String requestURL = request.getRequestURL().toString();
         myLogger.setRequestURL(requestURL);
 

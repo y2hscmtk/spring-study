@@ -25,7 +25,7 @@ public class MyLogger {
     }
 
     public void log(String meesage) {
-        System.out.println("[ " + uuid + "]" + "[" + requestURL + "]" + meesage);
+        System.out.println("[" + uuid + "]" + "[" + requestURL + "]" + meesage);
     }
 
     @PostConstruct

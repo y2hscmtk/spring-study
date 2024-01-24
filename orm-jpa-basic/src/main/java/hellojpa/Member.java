@@ -1,9 +1,7 @@
 package hellojpa;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 // JPA에서 매핑되는 객체임을 명시 @Entity
 @Entity
@@ -14,6 +12,15 @@ public class Member {
 
     // @Column(name = "username") => DB에서 name이 아닌 username으로 저장되어있다면 이렇게 명시해둔다.
     private String name;
+
+    // 기본적으로 기본 생성자가 하나 필요함
+    private Member() {
+    }
+
+    public Member(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public Long getId() {
         return id;

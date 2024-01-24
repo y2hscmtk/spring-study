@@ -15,7 +15,7 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments"  value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="update" /><!--create, create-drop 등으로 두면 매번 새롭게 스키마를 생성하여 데이터가 사라지게됨-->
         </properties>
     </persistence-unit>
 

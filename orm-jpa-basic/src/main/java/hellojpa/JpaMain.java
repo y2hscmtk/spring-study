@@ -32,9 +32,9 @@ public class JpaMain {
         tx.begin(); // 트랜젝션 시작
         try{
             // 1. 비영속 상태 => 엔티티 매니저와 아무런 관련이 없는 상태, DB에 들어가지도 않는다.
-            Member member = new Member(101L,"HelloJPA");
-            member.setName("HelloJPA");
-            member.setId(101L);
+            Member member = new Member(104L,"HelloJPA");
+//            member.setName("HelloJPA");
+//            member.setId(101L);
 
             // 2. 영속 상태
             // member는 persist 명령에 의해 영속상태가 됨, DB에 저장되지는 않음(BEFORE ~~ AFTER 안에 쿼리문 존재하는지 확인)
@@ -49,12 +49,12 @@ public class JpaMain {
             // em.remove(member);
 
             // 1차 캐시 - 조회
-            Member findMember1 = em.find(Member.class, 100L); // 조회를 하였음에도 쿼리를 보면 SELECT 쿼리가 존재하지 않음
+            Member findMember1 = em.find(Member.class, 104L); // 조회를 하였음에도 쿼리를 보면 SELECT 쿼리가 존재하지 않음
             // 저장할때 1차 캐시에 저장하였기 때문에, DB에서 조회하지 않고 바로 찾는다.
 
             // 종료 후 테스트 => DB에 존재하지 않으므로 SELECT문을 사용해서 조회 : findMember1 그 후 1차 캐시에 객체 저장
             // 2차 조회시(findMember2) DB에 접근하지 않고 1차 캐시에 존재하는 객체를 조회해서 가져온다.(pk로 매핑)
-            Member findMember2 = em.find(Member.class, 100L);
+            Member findMember2 = em.find(Member.class, 104L);
 
             // 1차 캐시에 존재했던 객체를 다시 불러온 것이므로, findMember1과 findMember2는 똑같은 인스턴스이다.
             System.out.println("findMember1.toString() = " + findMember1.toString());
@@ -70,13 +70,19 @@ public class JpaMain {
             // 값을 바꾸면 변경을 감지하고, 트렌젝션이 커밋되는 시점에 변경을 반영한다.
             
             // Flush
-            Member flushMember = new Member(200L, "member200");
+            Member flushMember = new Member(202L, "member200");
+            em.persist(flushMember);
             // 강제로 커밋한것과 같은 효과를 얻는 방법 flush
             // 영속성 컨텍스트의 변경내용을 데이터베이스에 동기화 한다.
             // 트랜잭션이라는 작업 단위가 중요 -> 커밋 직전에만 동기화하면 된다.
             em.flush(); // Insert 쿼리가 이 시점에 즉시 발생하게 된다.
             System.out.println("==========================");
 
+            // 준영속
+            Member findMember = em.find(Member.class, 202L);
+            findMember.setName("AAAA"); // 이름 변경
+            em.detach(findMember); // 준 영속 상태로 변경 => 업데이트 쿼리가 나가지 않는다.(영속성컨텍스트에서 제외되었기때문에)
+            // => 실제 DB에는 값이 남아있지만, 영속성에서 제외했기때문에 JPA에 의한 상태변화가 적용되지않는다.
 
             tx.commit(); // 작업 완료 후 상태 반영(commit)
         } catch (Exception e){

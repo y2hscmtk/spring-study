@@ -13,8 +13,10 @@ import java.util.Date;
  * */
 @Entity
 // @Table(name = "USER") // 만약 데이터베이스에 저장된 이름이 Member가 아니라 User일 경우 따로 이름을 명시한다.
+@SequenceGenerator(name = "member_seq_generator",sequenceName = "member_seq")
 public class Member {
     @Id // Primary Key임을 명시 @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "member_seq_generator")
     private Long id; // pk 매핑
 
     // @Column(name = "username") => DB에서 name이 아닌 username으로 저장되어있다면 이렇게 명시해둔다.

@@ -80,7 +80,7 @@ public class JpaMain {
 
             // 준영속
             Member findMember = em.find(Member.class, 202L);
-            findMember.setName("AAAA"); // 이름 변경
+            findMember.setUsername("AAAA"); // 이름 변경
             em.detach(findMember); // 준 영속 상태로 변경 => 업데이트 쿼리가 나가지 않는다.(영속성컨텍스트에서 제외되었기때문에)
             // => 실제 DB에는 값이 남아있지만, 영속성에서 제외했기때문에 JPA에 의한 상태변화가 적용되지않는다.
 
@@ -132,7 +132,7 @@ public class JpaMain {
         Member findMember = em.find(Member.class, id);
 
         // 이름 변경
-        findMember.setName("changedName"); // 변경만하고 commit하지 않아도 변경된 상태가 유지된다.
+        findMember.setUsername("changedName"); // 변경만하고 commit하지 않아도 변경된 상태가 유지된다.
         // => 마치 자바의 컬렉션을 다루듯 데이터베이스를 이용할 수 있도록 설계되었기 때문
 
         System.out.println("findMember = " + findMember.toString()); // 결과물 확인

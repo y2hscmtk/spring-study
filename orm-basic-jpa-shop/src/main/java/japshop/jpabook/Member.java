@@ -2,7 +2,7 @@ package japshop.jpabook;
 
 import jakarta.persistence.*;
 
-@Entity
+//@Entity
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.AUTO) // DB가 만들어주는 값으로 아이디 지정
     @Column(name = "MEMBER_ID")

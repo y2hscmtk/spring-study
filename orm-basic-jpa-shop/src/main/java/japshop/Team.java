@@ -1,9 +1,9 @@
 package japshop;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ----------------                --------------
@@ -21,6 +21,10 @@ public class Team {
     private Long teamId;
     private String name;
 
+    // 양방향 연관관계를 위해
+    @OneToMany(mappedBy = "team") // Member의 team과 연관관계가 매핑되어 있다는 의미
+    private List<Member> members = new ArrayList<>();
+
     public Long getTeamId() {
         return teamId;
     }
@@ -35,5 +39,13 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
     }
 }

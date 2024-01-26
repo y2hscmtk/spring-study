@@ -2,6 +2,8 @@ package japshop;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 public class JpaMain {
 
     public static void main(String[] args) {
@@ -30,10 +32,19 @@ public class JpaMain {
             em.clear(); // 영속성 컨텍스트 비우기
 
             // 조회할때 -> 참조를 꺼내면 됨
-            Member findMember = em.find(Member.class, member.getId());
-            Team findTeam = findMember.getTeam(); // 팀을 바로 꺼내어 쓸 수 있다.
-            System.out.println("findTeam.getName() = " + findTeam.getName());
+            // Member findMember = em.find(Member.class, member.getId());
+//            Team findTeam = findMember.getTeam(); // 바로 꺼내어 쓸 수 있다.
+//            System.out.println("findTeam.getName() = " + findTeam.getName());
             
+            // 양방향 연관관계 조회
+            // 멤버 -> 팀 -> 멤버
+            Member findMember = em.find(Member.class, member.getId());
+            List<Member> members = findMember.getTeam().getMembers();
+
+            for (Member m : members) {
+                System.out.println("m.getUsername() = " + m.getUsername());
+            }
+
 
             tx.commit();
         } catch (Exception e) {

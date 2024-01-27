@@ -26,7 +26,7 @@ public class Member {
     // 객체지향관점에서의 사용(참조를 이용) => JPA에게 어떤 관계인지 알려야함
     @ManyToOne // Member입장에서는 Many, Team 입장에서는 One
     @JoinColumn(name = "TEAM_ID") // FK가 TEAM_ID임을 명시
-    private Team team;
+    private Team team; // 연관관계의 주인(다대 일에서 '다'를 연관관계의 주인으로 설정해야 편하다.)
 
     public Long getId() {
         return id;
@@ -50,5 +50,6 @@ public class Member {
 
     public void setTeam(Team team) {
         this.team = team;
+        team.getMembers().add(this); // 연관관계 편의 메소드 -> 실수를 방지할 수 있다.
     }
 }

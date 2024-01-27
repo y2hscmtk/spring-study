@@ -23,7 +23,15 @@ public class Team {
 
     // 양방향 연관관계를 위해
     @OneToMany(mappedBy = "team") // Member의 team과 연관관계가 매핑되어 있다는 의미
-    private List<Member> members = new ArrayList<>();
+    private List<Member> members = new ArrayList<>(); // 연관관계에 종속되는 역할 -> 읽기 전용
+
+    // Team 기준 연관관계 편의 메소드
+    // 연관관계 편의 메소드는 한쪽에만 작성하는 것이 좋다.
+//    public void addMember(Member member) {
+//        member.setTeam(this);
+//        members.add(member);
+//    }
+
 
     public Long getTeamId() {
         return teamId;

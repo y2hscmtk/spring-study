@@ -1,8 +1,8 @@
-package japshop;
+package japshop.section5;
 
 import jakarta.persistence.*;
-
-import java.util.List;
+import japshop.section5.Member;
+import japshop.section5.Team;
 
 public class JpaMain {
 

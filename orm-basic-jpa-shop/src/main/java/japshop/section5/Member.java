@@ -1,4 +1,4 @@
-package japshop;
+package japshop.section5;
 
 import jakarta.persistence.*;
 

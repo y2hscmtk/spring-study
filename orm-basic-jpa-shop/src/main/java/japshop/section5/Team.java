@@ -1,6 +1,7 @@
-package japshop;
+package japshop.section5;
 
 import jakarta.persistence.*;
+import japshop.section5.Member;
 
 import java.util.ArrayList;
 import java.util.List;

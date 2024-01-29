@@ -1,4 +1,4 @@
-package japshop.practice2;
+package japshop.practice;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * ----------------                ----------------
@@ -20,7 +21,7 @@ import java.util.List;
  * MEMBER 1 ----- m ORDERS
  * m 쪽이 연관관계의 주인
  */
-//@Entity
+@Entity
 public class Member {
     @Id
     @Column(name = "MEMBER_ID")

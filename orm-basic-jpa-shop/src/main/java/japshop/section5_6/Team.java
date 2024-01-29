@@ -13,7 +13,7 @@ import java.util.List;
  * | USERNAME     |                |------------|
  * |______________|
  */
-@Entity
+//@Entity
 public class Team {
     @Id
     @GeneratedValue

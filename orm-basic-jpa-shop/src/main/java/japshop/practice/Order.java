@@ -1,4 +1,4 @@
-package japshop.practice2;
+package japshop.practice;
 
 import jakarta.persistence.*;
 
@@ -31,12 +31,17 @@ import java.util.List;
  * ORDER_ITEM m --- 1 ORDERS
  * m 쪽이 연관관계의 주인 => 주인은 ORDER_ITEM
  */
-//@Entity
-//@Table(name = "ORDERS") // order는 예약어로 존재하므로 오류 발생 가능
+@Entity
+@Table(name = "ORDERS") // order는 예약어로 존재하므로 오류 발생 가능
 public class Order {
     @Id @GeneratedValue
     @Column(name = "ORDER_ID")
     private Long id;
+
+    // Delivery와 1대1 연관관계
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID") // Delivery테이블의 PK를 FK로 설정하여 갖고 있겠다.
+    private Delivery delivery;
 
     // ORDERS가 m에 속하므로, 연관관계의 주인으로 삼는다. Member의 FK소유
     @ManyToOne
@@ -44,7 +49,7 @@ public class Order {
     private Member member;
 
     // ORDERS 테이블과 ORDER_ITEM 테이블과의 관계에서 연관관계의 주인은 M에 해당하는 ORDER_ITEM
-    @OneToMany(mappedBy = "ORDER_ID") // OrderItems의 FK ORDER_ID에 의해 매핑된다.
+    @OneToMany(mappedBy = "order") // OrderItems의 FK ORDER_ID에 의해 매핑된다.
     private List<OrderItem> orderItems = new ArrayList<>();
     private LocalDateTime orderDate;
     @Enumerated(EnumType.STRING) // 문자열로 두어야 추가 변경사항이 생겨도 안전함(인덱스가 아니므로 안전)

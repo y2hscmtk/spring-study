@@ -8,7 +8,7 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Product {
     @Id @GeneratedValue
     private Long id;

@@ -1,4 +1,4 @@
-package japshop.practice2;
+package japshop.practice;
 
 public enum OrderStatus {
     ORDER, CANCEL

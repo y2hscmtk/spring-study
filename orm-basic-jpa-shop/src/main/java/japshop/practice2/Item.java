@@ -14,7 +14,7 @@ import jakarta.persistence.*;
  * ORDER_ITEM m --- 1 ITEM
  * m 쪽이 연관관계의 주인 => 주인은 ORDER_ITEM
  */
-@Entity
+//@Entity
 public class Item {
     @Id
     @Column(name = "ITEM_ID")

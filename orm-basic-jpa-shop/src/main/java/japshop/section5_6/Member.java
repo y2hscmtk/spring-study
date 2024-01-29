@@ -1,6 +1,9 @@
-package japshop.section5;
+package japshop.section5_6;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ----------------                --------------
@@ -27,6 +30,19 @@ public class Member {
     @ManyToOne // Member입장에서는 Many, Team 입장에서는 One
     @JoinColumn(name = "TEAM_ID") // FK가 TEAM_ID임을 명시
     private Team team; // 연관관계의 주인(다대 일에서 '다'를 연관관계의 주인으로 설정해야 편하다.)
+
+    @OneToOne
+    @JoinColumn(name="LOCKER_ID")
+    private Locker locker;
+
+//    @ManyToMany
+//    @JoinTable(name = "MEMBER_PRODUCT") // 중간에 생성할 연결 테이블의 이름 설정
+//    private List<Product> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
+
+
 
     public Long getId() {
         return id;

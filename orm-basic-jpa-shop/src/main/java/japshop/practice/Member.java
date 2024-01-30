@@ -21,7 +21,7 @@ import java.util.List;
  * MEMBER 1 ----- m ORDERS
  * m 쪽이 연관관계의 주인
  */
-@Entity
+//@Entity
 public class Member {
     @Id
     @Column(name = "MEMBER_ID")

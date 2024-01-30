@@ -2,7 +2,7 @@ package japshop.practice;
 
 import jakarta.persistence.*;
 
-@Entity
+//@Entity
 public class Delivery {
     @Id @GeneratedValue
     @Column(name = "DELIVERY_ID")

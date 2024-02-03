@@ -21,8 +21,8 @@ import java.util.List;
  * MEMBER 1 ----- m ORDERS
  * m 쪽이 연관관계의 주인
  */
-//@Entity
-public class Member {
+@Entity
+public class Member extends BaseEntity{
     @Id
     @Column(name = "MEMBER_ID")
     private Long id;

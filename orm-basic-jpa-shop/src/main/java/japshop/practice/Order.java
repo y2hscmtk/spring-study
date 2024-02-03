@@ -31,9 +31,9 @@ import java.util.List;
  * ORDER_ITEM m --- 1 ORDERS
  * m 쪽이 연관관계의 주인 => 주인은 ORDER_ITEM
  */
-//@Entity
-//@Table(name = "ORDERS") // order는 예약어로 존재하므로 오류 발생 가능
-public class Order {
+@Entity
+@Table(name = "ORDERS") // order는 예약어로 존재하므로 오류 발생 가능
+public class Order extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "ORDER_ID")
     private Long id;

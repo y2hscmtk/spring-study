@@ -1,4 +1,4 @@
-package japshop.section5_6;
+package japshop.section;
 
 import jakarta.persistence.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * | USERNAME     |                |------------|
  * |______________|
  */
-@Entity
+//@Entity
 public class Member extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")

@@ -14,13 +14,15 @@ public class PracticeMain {
         tx.begin();
 
         try {
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("김영한");
 
-            // 주문
-            Order order = new Order();
-            order.addOrderItem(new OrderItem()); // 연관관계 편의함수 사용하여 양방향 연관관계 설정
+            em.persist(book);
 
             tx.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             tx.rollback();
         } finally {
             em.close();

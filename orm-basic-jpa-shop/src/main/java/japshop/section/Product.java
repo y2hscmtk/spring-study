@@ -1,4 +1,4 @@
-package japshop.section5_6;
+package japshop.section;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +8,7 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Product {
     @Id @GeneratedValue
     private Long id;

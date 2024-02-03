@@ -14,7 +14,7 @@ import java.util.List;
  * |______________|
  */
 @Entity
-public class Member {
+public class Member extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
     private Long id; // PK

@@ -2,7 +2,7 @@ package japshop.section;
 
 import jakarta.persistence.*;
 
-//@Entity
+@Entity
 public class Locker {
     @Id @GeneratedValue
     @Column(name = "LOCKER_ID")

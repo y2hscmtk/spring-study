@@ -2,7 +2,7 @@ package japshop.section;
 
 import jakarta.persistence.*;
 
-//@Entity
+@Entity
 public class MemberProduct {
     @Id @GeneratedValue
     private Long id;

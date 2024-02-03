@@ -2,7 +2,7 @@ package japshop.practice;
 
 import jakarta.persistence.Entity;
 
-@Entity // 상속관계 매핑 Item 상속
+//@Entity // 상속관계 매핑 Item 상속
 public class Album extends Item{
     private String artist;
     private String ect;

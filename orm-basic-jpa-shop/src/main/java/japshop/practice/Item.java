@@ -18,10 +18,10 @@ import java.util.List;
  * ORDER_ITEM m --- 1 ITEM
  * m 쪽이 연관관계의 주인 => 주인은 ORDER_ITEM
  */
-@Entity
+//@Entity
 // Item만 단독으로 클래스에 저장할 일이 없다고 판단된다면 추상 클래스로
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 전략은 SINGLE_TABLE로
-@DiscriminatorColumn // 상속받은 클래스들 사이에서 어떤 아이템인지 구별하기 위한 속성의 이름, 기본값은 DTYPE
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 상속 전략은 SINGLE_TABLE로
+//@DiscriminatorColumn // 상속받은 클래스들 사이에서 어떤 아이템인지 구별하기 위한 속성의 이름, 기본값은 DTYPE
 public abstract class Item extends BaseEntity{
     @Id
     @Column(name = "ITEM_ID")

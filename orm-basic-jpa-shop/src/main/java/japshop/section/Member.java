@@ -27,7 +27,9 @@ public class Member extends BaseEntity{
 //    private Long teamId; // FK
 
     // 객체지향관점에서의 사용(참조를 이용) => JPA에게 어떤 관계인지 알려야함
-    @ManyToOne // Member입장에서는 Many, Team 입장에서는 One
+    // FetchType => Member를 조회하는 시점에서 Team까지 조회하는것은 낭비임 -> LAZY를 사용해서 지연 로딩할 수 있음(프록시 객체로 조회)
+    // Member와 해당 Member의 Team을 함께 사용하는 경우가 많다면 한번에 가져오는것이 효율적 -> EAGER를 사용해서 즉시 로딩
+    @ManyToOne(fetch = FetchType.LAZY) // Member입장에서는 Many, Team 입장에서는 One
     @JoinColumn(name = "TEAM_ID") // FK가 TEAM_ID임을 명시
     private Team team; // 연관관계의 주인(다대 일에서 '다'를 연관관계의 주인으로 설정해야 편하다.)
 

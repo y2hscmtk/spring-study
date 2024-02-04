@@ -10,7 +10,7 @@ public class Delivery extends BaseEntity{
 
     // ORDERS 테이블과 1대1 연관관계
     // - 주테이블은 어디로 설정?
-    @OneToOne(mappedBy = "delivery") // 일대일 연관관계 FK의 이름은 delivery(객체관점)
+    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY) // 일대일 연관관계 FK의 이름은 delivery(객체관점)
     private Order order;
 
     // 배송지 주소

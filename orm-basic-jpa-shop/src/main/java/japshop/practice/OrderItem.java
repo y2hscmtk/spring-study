@@ -32,10 +32,10 @@ public class OrderItem extends BaseEntity{
     @Id @GeneratedValue
     @Column(name = "ORDER_ITEM_ID")
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ITEM_ID") //FK의 이름은 ITEM_ID
     private Item item;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID") //FK의 이름은 ORDER_ID
     private Order order;
     private int orderPrice;

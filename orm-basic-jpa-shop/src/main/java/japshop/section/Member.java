@@ -2,6 +2,7 @@ package japshop.section;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,51 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
 
+    // 공통 속성 Period로 묶는다. (임제디드 타입(복합타입)) => 응집도를 높일 수 있음
+    @Embedded // 임베디드 타입임을 명시
+    private Period period; // 기본 값을 합친 임베디드 타입을 정의해서 사용 => 재사용성을 높인다.(테이블 형태는 유지됨)
+    // private LocalDateTime startDate;
+    // private LocalDateTime endDate;
 
+    @Embedded
+    private Address homeAddress; // 임베디드 타입
+    /*
+    * private String citiy;
+    * private String zipcode;
+    * private String street;
+    * */
+
+    public Locker getLocker() {
+        return locker;
+    }
+
+    public void setLocker(Locker locker) {
+        this.locker = locker;
+    }
+
+    public List<MemberProduct> getMemberProducts() {
+        return memberProducts;
+    }
+
+    public void setMemberProducts(List<MemberProduct> memberProducts) {
+        this.memberProducts = memberProducts;
+    }
+
+    public Period getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Period period) {
+        this.period = period;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
 
     public Long getId() {
         return id;

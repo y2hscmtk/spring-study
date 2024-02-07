@@ -2,6 +2,8 @@ package japshop.section;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 // 재사용성을 높이기위한 임베디드 타입으로 정의
 @Embeddable
 public class Address {
@@ -42,5 +44,20 @@ public class Address {
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    // 동등 비교를 위해 제대로 구현되어 있어야함
+    // 객체의 equals는 모든값들이 동일한지 비교한다.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(citiy, address.citiy) && Objects.equals(zipcode, address.zipcode) && Objects.equals(street, address.street);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(citiy, zipcode, street);
     }
 }

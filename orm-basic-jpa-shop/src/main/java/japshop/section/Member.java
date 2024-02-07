@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ----------------                --------------
@@ -53,11 +55,48 @@ public class Member extends BaseEntity{
 
     @Embedded
     private Address homeAddress; // 임베디드 타입
+
     /*
     * private String citiy;
     * private String zipcode;
     * private String street;
     * */
+
+    // 값 타입 컬렉션
+    @ElementCollection // 값 타입 컬렉션
+    @CollectionTable(name = "FAFORITE_FOOD", joinColumns =
+        @JoinColumn(name = "MEMBER_ID") // FAVORITE_FOOD 테이블의 FK인 MEMBER_ID와 join
+    ) // 매핑될 테이블 이름
+    @Column(name = "FOOD_NAME") // Favroite_food 테이블의 컬럼은 한개뿐이므로 별칭 지정
+    private Set<String> favoriteFoods = new HashSet<>(); // 일대다
+
+//    @ElementCollection // 값 타입 컬렉션
+//    @CollectionTable(name = "ADDRESS", joinColumns =
+//        @JoinColumn(name = "MEMBER_ID") // ADDRESS 테이블의 FK인 MEMBER_ID와 매핑
+//    ) // 매핑 정보
+//    private List<Address> addressesHistory = new ArrayList<>(); // 일대 다
+
+    // 값 타입이 아닌 엔티티로 매핑하는 방법 => 특정이 가능해진다.
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="MEMBER_ID")
+    private List<AddressEntity> addressesHistory = new ArrayList<>();
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+
+    public List<AddressEntity> getAddressesHistory() {
+        return addressesHistory;
+    }
+
+    public void setAddressesHistory(List<AddressEntity> addressesHistory) {
+        this.addressesHistory = addressesHistory;
+    }
 
     public Locker getLocker() {
         return locker;

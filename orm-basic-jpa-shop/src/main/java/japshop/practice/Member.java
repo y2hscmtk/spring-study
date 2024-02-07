@@ -1,9 +1,7 @@
 package japshop.practice;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import japshop.section.Address;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +25,17 @@ public class Member extends BaseEntity{
     @Column(name = "MEMBER_ID")
     private Long id;
     private String name;
-    private String city;
-    private String zipcode;
+
+    @Embedded
+    private Address address; // 값 타입으로 지정
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
@@ -47,22 +54,6 @@ public class Member extends BaseEntity{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
     }
 
     public List<Order> getOrders() {

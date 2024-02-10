@@ -1,9 +1,9 @@
 package utilizingjpa.jpashop;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import utilizingjpa.jpashop.domain.Member;
 
 @Repository
 public class MemberRepository {

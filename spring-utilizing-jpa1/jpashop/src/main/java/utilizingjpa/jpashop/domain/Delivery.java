@@ -15,7 +15,7 @@ public class Delivery {
     private Long id;
 
     // 일대일 관계
-    @OneToOne
+    @OneToOne(mappedBy = "delivery")
     private Order order;
 
     private Address address;

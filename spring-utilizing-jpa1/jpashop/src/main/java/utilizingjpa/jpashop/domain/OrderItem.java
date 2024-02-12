@@ -14,7 +14,7 @@ public class OrderItem {
 
     // 다대일 '다' ; 연관관계의 주인
     @ManyToOne
-    @JoinColumn(name = "order_id") // pk order_id와 매핑
+    @JoinColumn(name = "order_id") // 매핑 이후 order_id라는 pk를 얻음
     private Order order;
 
     // 다대일 '다' ; 연관관계의 주인

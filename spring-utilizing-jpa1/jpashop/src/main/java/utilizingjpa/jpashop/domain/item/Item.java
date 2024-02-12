@@ -3,6 +3,10 @@ package utilizingjpa.jpashop.domain.item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import utilizingjpa.jpashop.domain.Category;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -16,4 +20,8 @@ public abstract class Item {
     private String name;
     private int price;
     private int stockQuantity;
+
+    // 다대다 관계(실무 사용 금지)
+    @ManyToMany(mappedBy = "items") // items에 의해 매핑될 것이다.
+    private List<Category> categories = new ArrayList<>();
 }

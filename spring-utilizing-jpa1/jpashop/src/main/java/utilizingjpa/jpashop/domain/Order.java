@@ -27,7 +27,7 @@ public class Order {
     private Delivery delivery;
 
     // 일대다 => OrderItem쪽이 '다'
-    @OneToMany(mappedBy = "order") // OrderItem테이블의 필드명 order에 의해 매핑된다.
+    @OneToMany(mappedBy = "order") // OrderItem 테이블의 pk order에 의해 매핑된다.
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 주문 시간

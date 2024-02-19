@@ -13,12 +13,12 @@ public class OrderItem {
     private Long id;
 
     // 다대일 '다' ; 연관관계의 주인
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id") // 매핑 이후 order_id라는 pk를 얻음
     private Order order;
 
     // 다대일 '다' ; 연관관계의 주인
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 

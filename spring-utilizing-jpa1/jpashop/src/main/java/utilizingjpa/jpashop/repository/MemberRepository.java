@@ -1,16 +1,18 @@
 package utilizingjpa.jpashop.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import utilizingjpa.jpashop.domain.Member;
 
 import java.util.List;
 
 @Repository // 스프링 빈으로 등록
+@RequiredArgsConstructor
 public class MemberRepository {
-    @PersistenceContext // 스프링이 Entity Manger를 만들어서 주입
-    private EntityManager em;
+    // @PersistenceContext // 스프링이 Entity Manger를 만들어서 주입
+    // => SpringBoot 라이브러리에 의해 AutoWired 가능 -> RequiredArgsConstructor로 치환 가능
+    private final EntityManager em;
 
     // 회원 저장
     public void save(Member member) {

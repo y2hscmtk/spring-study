@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional(readOnly = true) // JPA의 변경 로직은 모두 Transaction 안에서 수행되어야 한다.
 // readOnly의 경우 읽기만 가능하므로 최적화에 도움이 된다. 하지만 수정 같은 작업이 필요할 경우 readOnly를 false해야한다.
 // Spring에서 제공하는 @Transactional을 사용하는 것이 좋다.
-@AllArgsConstructor
+//@AllArgsConstructor
 @RequiredArgsConstructor // final 키워드가 존재하는 필드에 대해서 생성자를 만들어준다. => 생성자 주입
 public class MemberService {
     //1.  필드 injection

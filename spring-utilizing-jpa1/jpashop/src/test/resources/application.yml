@@ -1,0 +1,18 @@
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:test # 테스트 수행시 메모리 모드로, 스프링부트 사용시 심지어 메모리 모드를 명시하지 않아도 자동으로 메모리 모드로 수행함
+#    hikari:
+#      username: sa
+#      password:
+#      driver-class-name: org.h2.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    properties:
+#      hibernate:
+##        show_sql: true
+#        format_sql: true
+logging:
+  level:
+    org.hibernate.type : trace
+    org.hibernate.sql : debug

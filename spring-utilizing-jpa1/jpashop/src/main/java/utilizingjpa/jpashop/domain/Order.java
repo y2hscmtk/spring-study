@@ -67,4 +67,47 @@ public class Order {
         // => 하나의 함수만으로 설정이 가능하고, 까먹을 위험도 없어진다.
     }*/
 
+    //==생성 메소드==//
+    //주문 상품은 연관관계가 복잡하게 얽혀있기 때문에 생성 메소드를 따로 두는데 편하다
+    //회원 정보, 배송 정보, 아이템 여러개
+    //=> 주문 생성에 대한 모든 로직 완료
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER); // 기본 정보 주입
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    //==비즈니스 로직==//
+    /**
+     * 주문 취소
+     */
+    public void cancel() {
+        // 이미 배송 완료 => 취소 불가
+        if (delivery.getDeliveryStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송완료 된 상품은 취소가 불가능합니다");
+        }
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+    }
+
+    //==조회 로직==//
+    /**
+     * 전체 주문 가격 조회
+     * */
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
+
 }

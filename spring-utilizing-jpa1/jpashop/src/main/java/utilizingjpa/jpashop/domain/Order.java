@@ -1,7 +1,9 @@
 package utilizingjpa.jpashop.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본생성자를 통한 생성 방지
 public class Order {
     @Id @GeneratedValue
     @Column(name = "order_id")
@@ -22,12 +25,12 @@ public class Order {
     private Member member; // FK를 가진쪽이 연관관계의 주인('다'에 속함)
 
     // 일대일 : FK의 위치는 아무곳에나 두어도 상관없으나 접근을 많이 하는 곳에 두는 것이 좋다.
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id") // Delivery테이블의 PK를 FK로
     private Delivery delivery;
 
     // 일대다 => OrderItem쪽이 '다'
-    @OneToMany(mappedBy = "order") // OrderItem 테이블의 pk order에 의해 매핑된다.
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 테이블의 pk order에 의해 매핑된다.
     private List<OrderItem> orderItems = new ArrayList<>();
 
     // 주문 시간
@@ -73,8 +76,8 @@ public class Order {
     //=> 주문 생성에 대한 모든 로직 완료
     public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
         Order order = new Order();
-        order.setMember(member);
-        order.setDelivery(delivery);
+        order.setMember(member); // 연관관계 설정
+        order.setDelivery(delivery); // 연관관계 설정
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }

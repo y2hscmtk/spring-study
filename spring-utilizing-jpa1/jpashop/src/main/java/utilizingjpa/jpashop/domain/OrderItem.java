@@ -1,12 +1,15 @@
 package utilizingjpa.jpashop.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import utilizingjpa.jpashop.domain.item.Item;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본생성자를 통한 생성 방지
 public class OrderItem {
     @Id @GeneratedValue
     @Column(name = "order_item_id")

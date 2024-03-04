@@ -11,6 +11,8 @@ import utilizingjpa.jpashop.domain.Address;
 import utilizingjpa.jpashop.domain.Member;
 import utilizingjpa.jpashop.service.MemberService;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -38,5 +40,14 @@ public class MemberController {
 
         memberService.join(member); // 회원 가입 처리
         return "redirect:/"; // 처음 화면으로 넘어가기
+    }
+
+    @GetMapping("/members")
+    public String list(Model model) {
+        List<Member> members = memberService.findMembers();
+        // 템플릿의 경우 엔티티를 그대로 반환해도 되지만, api개발의 경우 dto를 반환해야만한다.
+        // 엔티티를 그대로 반환할 경우 엔티티 수정시 api의 모든 값들도 모두 변경되기 때문이다.
+        model.addAttribute("members", members);
+        return "members/memberList";
     }
 }

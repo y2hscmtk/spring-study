@@ -1,6 +1,7 @@
 package utilizingjpa.jpashop.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,9 @@ public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
-    private String name;
+
+    @NotEmpty // Validation => Null이 아닌 경우에 대해서만
+    private String name; // 어떤 API에서는 NULL일수도 있는데, 어떤데에서는 아닐 수도 있는 문제
 
     @Embedded // 내장 타입
     private Address address;

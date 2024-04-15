@@ -1,12 +1,10 @@
 package utilizingjpa.jpashop.api;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utilizingjpa.jpashop.domain.Member;
 import utilizingjpa.jpashop.service.MemberService;
 
@@ -32,12 +30,41 @@ public class MemberApiController {
     // 엔티티를 직접 받지 않고 별도의 Request클래스(DTO)를 사용하여 값을 받았다.
     // 장점 : 엔티티 스펙의 변화가 발생하더라도 API에 큰 영향이 없다. => 유지보수 용이
     @PostMapping("api/v2/members")
-    public CreateMemberResponse saveMemberV2(@RequestParam @Valid CreateMemberRequest requst) {
+    public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest requst) {
         Member member = new Member();
         member.setName(requst.name);
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
     }
+
+
+    // 수정 요청
+    // 대상 id는 pathVariable, 수정 내용은 body로
+    @PutMapping("api/v2/members/{id}")
+    public UpdateMemberResponse updateMemberV2(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid UpdateMemberRequest request) {
+
+        memberService.update(id, request.getName());
+        // 정책 : 커멘드와 쿼리를 분리한다 => update된 멤버를 반환하는 것이 아닌, 다시 찾아서 조회 => 성능상 큰 이슈가 되지 않음
+        Member findMember = memberService.findOne(id);
+        return new UpdateMemberResponse(findMember.getId(), findMember.getName());
+    }
+
+    @Data
+    static class UpdateMemberRequest{ // DTO 요청 타입
+        private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class UpdateMemberResponse { // DTO 반환 타입
+        private Long id;
+        private String name;
+    }
+
+
+
 
 
     // V2에서 사용되기 위한 Request 클래스 => 엔티티 직접 노출과 파라미터 사용을 방지한다.

@@ -11,6 +11,9 @@ import utilizingjpa.jpashop.domain.item.Item;
 import utilizingjpa.jpashop.repository.ItemRepository;
 import utilizingjpa.jpashop.repository.MemberRepository;
 import utilizingjpa.jpashop.repository.OrderRepository;
+import utilizingjpa.jpashop.repository.OrderSearch;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true) // 트랜젝션이 필요 없는 모든 작업에 대해서는 readOnly모드로 활성화
@@ -61,4 +64,7 @@ public class OrderService {
     /**
      * 검색
      */
+    public List<Order> findOrders(OrderSearch orderSearch) {
+        return orderRepository.findAllByString(orderSearch);
+    }
 }

@@ -8,12 +8,55 @@ import org.springframework.web.bind.annotation.*;
 import utilizingjpa.jpashop.domain.Member;
 import utilizingjpa.jpashop.service.MemberService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 // @Controller + @ResponseBody = @RestController
 @RestController // 데이터 자체를 json으로 보내겠다는 의미(스프링 MVC 강의 참고)
 @RequiredArgsConstructor
 public class MemberApiController {
 
     private final MemberService memberService;
+
+    // 회원 조회
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+        // 반환값으로 List<Member>와 같이 엔티티를 직접 노출하게되면
+        // 1. 해당 엔티티에서 노출하고싶지 않은 값까지 노출된다.(예 : 주문목록)
+        // => 엔티티 의존관계 설정시 좋지 않은 방법이다. API 스펙이 변경되면 그에 맞춰서 엔티티를 수정해야 하는 일이 많아진다.
+        // 2. 배열을 직접 반환하는 것이기 때문에 API 기능 확장이 불가능하다.
+        // ["count":~~, {~~},{~~},{~~}] => 불가
+        // {"count":~~, "data":[{~~},{~~},{~~}]} => 가능(기능 확장)
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> members = memberService.findMembers();
+        List<MemberDTO> collect = members.stream()
+                .map(m -> new MemberDTO(m.getName()))
+                .collect(Collectors.toList());
+        return new Result(collect.size(),collect); // data안에 반환값 넣어서 보내기
+        // 위와같이 DTO를 활용하면 API를 확장 가능성을 고려하며 설계가 가능하다.
+        // {"count" : ~ ,data":[{},{},{}]}
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>{
+        private int count;
+        private T data;
+    }
+
+    // 조회시 이름만 반환한다고 가정 => 필요한 데이터만 얻을 수 있도록 가공한다.
+    @Data
+    @AllArgsConstructor
+    static class MemberDTO{
+        private String name;
+    }
+
+
+
 
     // 회원 Json데이터를 바디를 통해 받고 매핑
     // 장점 : 별도의 클래스(DTO)를 작성하지 않고 엔티티를 직접 받을 수 있다.

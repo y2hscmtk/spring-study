@@ -1,5 +1,6 @@
 package utilizingjpa.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class OrderItem {
     private Long id;
 
     // 다대일 '다' ; 연관관계의 주인
+    @JsonIgnore // 양방향의 경우 무한루프 방지를 위해 한쪽은 JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id") // 매핑 이후 order_id라는 pk를 얻음
     private Order order;

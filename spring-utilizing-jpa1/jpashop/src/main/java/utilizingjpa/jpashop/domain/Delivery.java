@@ -1,5 +1,6 @@
 package utilizingjpa.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class Delivery {
     private Long id;
 
     // 일대일 관계
+    @JsonIgnore // 양방향의 경우 무한루프 방지를 위해 한쪽은 JsonIgnore
     @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     private Order order;
 

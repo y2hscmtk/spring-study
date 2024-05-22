@@ -1,14 +1,17 @@
 package utilizingjpa.jpashop.domain;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Table(name = "orders")
@@ -20,18 +23,18 @@ public class Order {
     private Long id;
 
     // 다대일
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id") // 매핑을 무엇으로 할 것인지(Member의 pk를 fk로 갖겠다.)
     private Member member; // FK를 가진쪽이 연관관계의 주인('다'에 속함)
-
-    // 일대일 : FK의 위치는 아무곳에나 두어도 상관없으나 접근을 많이 하는 곳에 두는 것이 좋다.
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id") // Delivery테이블의 PK를 FK로
-    private Delivery delivery;
 
     // 일대다 => OrderItem쪽이 '다'
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 테이블의 pk order에 의해 매핑된다.
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    // 일대일 : FK의 위치는 아무곳에나 두어도 상관없으나 접근을 많이 하는 곳에 두는 것이 좋다.
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id") // Delivery테이블의 PK를 FK로
+    private Delivery delivery;
 
     // 주문 시간
     private LocalDateTime orderDate;

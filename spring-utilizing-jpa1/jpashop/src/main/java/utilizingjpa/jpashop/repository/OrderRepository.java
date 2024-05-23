@@ -102,10 +102,13 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // Fetch Join
+    // N+1 문제를 해결하기 위해 한번의 조회시, 연관되어 있는 Member와 Delivery 모두 조인해서 가져온다.
+    // 이러한 경우 Lazy 설정이 되어있더라도 값을 모두 가져온다.
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
                         "select o from Order o" +
-                                " join fetch o.member m" +
+                                " join fetch o.member m" + // fetch는 JPA에만 존재
                                 " join fetch o.delivery d", Order.class)
                 .getResultList();
     }
@@ -119,7 +122,6 @@ public class OrderRepository {
                                 " join fetch oi.item i", Order.class)
                 .getResultList();
     }
-
     public List<Order> findAllWithMemberDelivery(int offset, int limit) {
         return em.createQuery(
                         "select o from Order o" +

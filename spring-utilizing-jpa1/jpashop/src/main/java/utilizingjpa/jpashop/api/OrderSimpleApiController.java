@@ -9,6 +9,8 @@ import utilizingjpa.jpashop.domain.Order;
 import utilizingjpa.jpashop.domain.OrderStatus;
 import utilizingjpa.jpashop.repository.OrderRepository;
 import utilizingjpa.jpashop.repository.OrderSearch;
+import utilizingjpa.jpashop.repository.OrderSimpleQueryDto;
+import utilizingjpa.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     // 엔티티를 직접 노출시켜 반환하는 경우, 연관관계 매핑된 엔티티가 지연로딩 엔티티라면 프록시를 반환할 수 없어서 문제가 발생한다.
     // 해결방안으로 로직에서 연관된 엔티티를 조회하여 LAZY를 강제 초기화 하는 방법과
@@ -53,6 +56,7 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
     }
 
+    // 조회할때 내가 원하는 값만 조회하도록 DTO를 활용할 수 있다.
     @GetMapping("api/v3/simple-orders")
     public List<SimpleOrdersDto> ordersV3() {
         // 패치 조인을 활용하여 N + 1 문제 해결
@@ -62,6 +66,13 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
         return result;
     }
+
+    // JPA에서 DTO로 바로 조회, 성능상 V3보다 좋지만 재사용성은 낮다.(오직 V4에서만 적용가능한 로직 => 조회된 형태가 일정하기 때문)
+    @GetMapping("api/v4/simple-orders")
+    public List<OrderSimpleQueryDto> ordersV4() {
+        return orderSimpleQueryRepository.findOrderDtos();
+    }
+
 
     @Data
     static class SimpleOrdersDto {

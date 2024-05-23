@@ -6,12 +6,14 @@ import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+import utilizingjpa.jpashop.api.OrderSimpleApiController;
 import utilizingjpa.jpashop.domain.Member;
 import utilizingjpa.jpashop.domain.Order;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// 레파지토리는 가급적 순수한 엔티티를 조회할 때 사용
 @Repository
 @RequiredArgsConstructor
 public class OrderRepository {

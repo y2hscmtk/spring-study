@@ -115,6 +115,15 @@ public class OrderRepository {
                 .getResultList();
     }
 
+    // 패치 조인
+    // 한번에 연관되어 있는 테이블을 조회한 뒤 한번에 반환한다.
+    // => 조인으로 인해 중복되는 값이 발생할 수 있다.(DB 입장에서)
+    // => o가 2개고, 종속되어있는 값이 각각 2개라면 4개가 반환된다.
+    // => JPA의 distinct를 사용하면 id가 같은(인스턴스가 같은) 엔티티에 대해 중복값을 합쳐서 반환하다.
+    // 데이터베이스의 distinct는 한 줄의 모든 값이 전부 동일한 경우에만 중복이 제거되지만
+    // JPA에서는 id가 같다면 같은 인스턴스로 취급하여 중복을 제거해준다.
+    // 주의 : 컬렉션 패치조인(일대다 패치조인)은 페이징이 불가능해진다는 단점이 있다.
+    // => 메모리 올린후 메모리 페이징이 이뤄지기 때문(메모리 초과 위험이 있다.)
     public List<Order> findAllWithItem() {
         return em.createQuery(
                         "select distinct o from Order o" +

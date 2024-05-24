@@ -40,7 +40,6 @@ public class OrderApiController {
 
     // 엔티티를 DTO로 변환
     // 컬렉션 내부의 모든 컬렉션들을 DTO로 변환한 뒤 리턴(엔티티 직접 노출 x)
-
     @GetMapping("/api/v2/orders")
     public List<OrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
@@ -48,6 +47,13 @@ public class OrderApiController {
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());
         return collect;
+    }
+
+    // 패치조인을 활용한 성능 최적화
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> allWithItem = orderRepository.findAllWithItem();
+
     }
 
     @Data

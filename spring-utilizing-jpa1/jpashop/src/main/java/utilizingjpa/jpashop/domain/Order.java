@@ -1,12 +1,13 @@
 package utilizingjpa.jpashop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class Order {
     private Member member; // FK를 가진쪽이 연관관계의 주인('다'에 속함)
 
     // 일대다 => OrderItem쪽이 '다'
+    // 패치 조인시, 페이징 기준을 설정 => 하이버네이트가 최적화된 페이징 쿼리(IN 쿼리)를 생성한다.
+    // ToOne관계의 경우, 클래스 단위에 @BatchSize 어노테이션을 사용해야한다.
+    @BatchSize(size = 100) // 100~1000개로 지정한다.
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 테이블의 pk order에 의해 매핑된다.
     private List<OrderItem> orderItems = new ArrayList<>();
 

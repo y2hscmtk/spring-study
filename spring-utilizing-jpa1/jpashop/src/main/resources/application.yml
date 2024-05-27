@@ -12,6 +12,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        default_batch_fetch_size: 100 # 최대 배치 사이즈 지정(페이징 쿼리), 100~1000개로 지정한다.(그 이상은 데이터베이스 오류를 야기한다.)
 logging:
   level:
     org.hibernate.type : trace

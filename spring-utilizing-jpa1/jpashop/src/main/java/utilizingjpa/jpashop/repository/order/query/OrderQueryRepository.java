@@ -71,4 +71,18 @@ public class OrderQueryRepository {
 
         return result;
     }
+
+    // 쿼리 한번으로 조회하는 방법
+    // 페이징 불가능(조인으로 인해 중복 데이터가 발생하므로)
+    public List<OrderFlatDto> findAllByDto_flat() {
+        return em.createQuery(
+                "select new " +
+                        "utilizingjpa.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count)" +
+                            " from Order o" +
+                            " join o.member m " +
+                            " join o.delivery d " +
+                            " join o.orderItems oi " +
+                            " join oi.item i", OrderFlatDto.class)
+                .getResultList();
+    }
 }

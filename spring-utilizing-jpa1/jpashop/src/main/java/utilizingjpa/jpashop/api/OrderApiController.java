@@ -12,12 +12,16 @@ import utilizingjpa.jpashop.domain.OrderItem;
 import utilizingjpa.jpashop.domain.OrderStatus;
 import utilizingjpa.jpashop.repository.OrderRepository;
 import utilizingjpa.jpashop.repository.OrderSearch;
+import utilizingjpa.jpashop.repository.order.query.OrderFlatDto;
+import utilizingjpa.jpashop.repository.order.query.OrderItemQueryDto;
 import utilizingjpa.jpashop.repository.order.query.OrderQueryDto;
 import utilizingjpa.jpashop.repository.order.query.OrderQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,7 +53,7 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
         List<OrderDto> collect = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
         return collect;
     }
 
@@ -59,7 +63,7 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAllWithItem();
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return result;
     }
@@ -78,7 +82,7 @@ public class OrderApiController {
         // '다'쪽을 기준으로 데이터 증가가 이루어지므로 페치조인하지 않는다.
         List<OrderDto> result = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return result;
     }
@@ -91,6 +95,22 @@ public class OrderApiController {
     @GetMapping("api/v5/orders")
     public List<OrderQueryDto> ordersV5() {
         return orderQueryRepository.findAllByDto_optimization();
+    }
+
+    @GetMapping("api/v6/orders")
+    public List<OrderQueryDto> ordersV6() {
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+        // 필요하다면 메모리단위에서 중복 제거 작업 수행 ~
+        return flats.stream()
+                .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(),
+                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                        mapping(o -> new OrderItemQueryDto(o.getOrderId(),
+                                o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
+                        e.getKey().getAddress(), e.getValue()))
+                .collect(toList());
     }
 
 
@@ -116,7 +136,7 @@ public class OrderApiController {
 //            orderItems = order.getOrderItems();
             orderItems = order.getOrderItems().stream()
                     .map(orderItem -> new OrderItemDto(orderItem))
-                    .collect(Collectors.toList());
+                    .collect(toList());
         }
     }
 

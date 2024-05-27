@@ -12,6 +12,8 @@ import utilizingjpa.jpashop.domain.OrderItem;
 import utilizingjpa.jpashop.domain.OrderStatus;
 import utilizingjpa.jpashop.repository.OrderRepository;
 import utilizingjpa.jpashop.repository.OrderSearch;
+import utilizingjpa.jpashop.repository.order.query.OrderQueryDto;
+import utilizingjpa.jpashop.repository.order.query.OrderQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     // 엔티티를 직접 노출하는 경우(컬렉션 노출)
     @GetMapping("/api/v1/orders")
@@ -79,6 +82,12 @@ public class OrderApiController {
 
         return result;
     }
+
+    @GetMapping("api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
 
     @Data
     static class OrderDto {

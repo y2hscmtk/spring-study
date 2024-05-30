@@ -8,6 +8,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id","username","age"}) // 연관관계 필드는 무한루프를 야기하므로 toString사용시 제외한다.
 @Table(name = "MEMBER")
+@NamedQuery( // 재사용되는 쿼리를 위해 사용한다. 실무에서는 거의 사용되지 않는다.
+        name = "Member.findByUsername",
+        query = "select m from Member m where m.username = :username"
+)
 public class Member {
 
     @Id

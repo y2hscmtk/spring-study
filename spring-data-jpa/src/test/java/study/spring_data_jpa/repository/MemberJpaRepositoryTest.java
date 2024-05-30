@@ -77,4 +77,17 @@ class MemberJpaRepositoryTest {
         assertThat(result.get(0).getAge()).isEqualTo(20);
         assertThat(result.size()).isEqualTo(1);
     }
+
+    // Named쿼리르 사용하여 반복 사용되는 쿼리를 재사용할 수 있으나, 쿼리를 직접 작성해야 하는 번거로움이 존재한다.
+    @Test
+    public void testNamedQuery() {
+        Member m1 = new Member("aaa", 10);
+        Member m2 = new Member("bbb", 20);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        List<Member> result = memberJpaRepository.findByUsename("aaa");
+        Member findMember = result.get(0);
+        assertThat(findMember).isEqualTo(m1);
+    }
 }

@@ -51,4 +51,12 @@ public class MemberJpaRepository {
                 .setParameter("age", age)
                 .getResultList();
     }
+
+    // NamedQuery
+    public List<Member> findByUsename(String username) {
+        // Member 엔티티에 선언해둔 쿼리를 재사용할 수 있다.
+        return em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username", username)
+                .getResultList();
+    }
 }

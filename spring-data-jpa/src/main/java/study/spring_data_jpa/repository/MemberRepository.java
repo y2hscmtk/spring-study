@@ -1,6 +1,8 @@
 package study.spring_data_jpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import study.spring_data_jpa.entity.Member;
 
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 // Repository 어노테이션을 적지 않아도 괜찮다.
 public interface MemberRepository extends JpaRepository<Member,Long> {
     // 쿼리 메소드
-    List<Member> findByUsername(String username); // 별도로 구현하지 않아도 Spring Data JPA에 의해 구현된다.
+    //List<Member> findByUsername(String username); // 별도로 구현하지 않아도 Spring Data JPA에 의해 구현된다.
 
     // name과 이름이 일치하면서, 나이가 age이상인 회원 조회
     List<Member> findByUsernameAndAgeGreaterThan(String name, int age);
@@ -24,4 +26,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     // find...By (...에는 어떠한 변수명도 상관없다. 예) findHelloBy..), By뒤에 조회할 값을 적지 않으면 전체 조회
 
     // 주의 : 엔티티의 필드명이 변경되면 인터페이스에 정의한 메서드 이름도 함께 변경해야 한다.
+
+    //@Query(name = "Member.findByUsername")
+    List<Member> findByUsername(@Param("username") String username);
+    // 관례상 네임드 쿼리가 존재하는지 찾고, 없다면 새롭게 생성한다. 따라서 @Query가 없더라도 먼저 네임드 쿼리가 존재하는지 찾는다.
 }

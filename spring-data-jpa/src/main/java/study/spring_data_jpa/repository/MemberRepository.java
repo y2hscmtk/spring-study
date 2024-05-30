@@ -30,4 +30,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     //@Query(name = "Member.findByUsername")
     List<Member> findByUsername(@Param("username") String username);
     // 관례상 네임드 쿼리가 존재하는지 찾고, 없다면 새롭게 생성한다. 따라서 @Query가 없더라도 먼저 네임드 쿼리가 존재하는지 찾는다.
+
+    // 장점 1. 복잡한 쿼리를 사용할때 유용하다.(메소드 이름이 길어지지 않아도 된다.)
+    // 장점 2. 개발 단계에서 오류를 찾기 편하다.(엔티티 이름을 잘못 설정한 경우, 오류를 찾기 용이하다.)
+    // 쿼리가 너무 복잡하다면 @Query를 사용하는 것을 추천한다.
+    @Query("select m from Member m where m.username = :username and m.age = :age")
+    List<Member> findUser(@Param("username") String username, @Param("age") int age);
 }

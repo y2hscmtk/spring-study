@@ -90,4 +90,31 @@ class MemberJpaRepositoryTest {
         Member findMember = result.get(0);
         assertThat(findMember).isEqualTo(m1);
     }
+
+    @Test
+    public void paging() {
+        // given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 10));
+        memberJpaRepository.save(new Member("member3", 10));
+        memberJpaRepository.save(new Member("member4", 10));
+        memberJpaRepository.save(new Member("member5", 10));
+
+        int age = 10;
+        int offset = 0; // 몇번째 행부터 출력할지 => (1번째면 0부터)
+        int limit = 3; // 출력할 행의 수
+        // 예) 10행씩 출력
+        // 1페이지 : select * from member ORDERS LIMIT 10 OFFSET 0; // 1번째 행부터 10개 출력
+        // 2페이지 : select * from member ORDERS LIMIT 10 OFFSET 10; // 10번째 행부터 다음 10개 출력
+        // => 페이징 계산 공식 참고(https://forest71.tistory.com/15)
+
+        // when
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        Long totalCount = memberJpaRepository.totalCount(age);
+
+        // then
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(5);
+
+    }
 }

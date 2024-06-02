@@ -3,12 +3,16 @@ package study.spring_data_jpa.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.spring_data_jpa.dto.MemberDto;
 import study.spring_data_jpa.entity.Member;
 import study.spring_data_jpa.entity.Team;
 
+import java.awt.print.Pageable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -169,4 +173,42 @@ class MemberRepositoryTest {
         // 결론 : 자바8 이상 환경에서 가급적 Optional을 사용하도록 한다.
     }
 
+
+    @Test
+    public void paging() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        // 0 페이지에서부터 3개 가져온다, 정렬 조건은 Sort.by로 설정
+        int age = 10;
+        PageRequest pageRequest =
+                PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        // when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+        // 페이징 결과 DTO로 변환 => MAP를 활용하여 유용하게 사용 가능
+        Page<MemberDto> toMap = page.map(member -> new MemberDto(member.getId(), member.getUsername(), member.getUsername()));
+
+        // then
+        List<Member> content = page.getContent(); // 실제 내용 가져오기 3개
+        long totalElements = page.getTotalElements(); // 총 몇개인지 얻어오기 5개
+
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+        System.out.println("totalElements = " + totalElements);
+
+        assertThat(content.size()).isEqualTo(3); // 현재 페이지에서 얻어온 row의 수
+        assertThat(page.getTotalElements()).isEqualTo(5); // 모든 row의 개수
+        assertThat(page.getNumber()).isEqualTo(0); // 현재 페이지 번호
+        assertThat(page.getTotalPages()).isEqualTo(2); // 총 페이지 수 3개씩 가져오므로 2개의 페이지가 나오게됨
+        assertThat(page.isFirst()).isTrue(); // 현재 페이지가 첫 페이지인지 True, False
+        assertThat(page.hasNext()).isTrue(); // 다음 페이지가 있는지 True, False
+
+    }
 }

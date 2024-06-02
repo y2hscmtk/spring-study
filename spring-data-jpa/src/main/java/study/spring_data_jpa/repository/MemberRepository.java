@@ -7,6 +7,7 @@ import study.spring_data_jpa.dto.MemberDto;
 import study.spring_data_jpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 자세한 문법은 Spring.io - Projects - Spring Data - Reference Doc 참고
@@ -49,4 +50,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     // 매개변수로 전달받은 리스트 names에 존재하는 이름이 있는지 in을 사용하여 검색
     @Query("select m from Member m where m.username in :names")
     List<Member> findByNames(@Param("names") List<String> names);
+
+    // find..By 문 (..안에 들어갈 이름은 자유롭게 설정 가능)
+    // 스프링 데이터 JPA는 반환 타입을 자유롭게 지원해준다.
+    List<Member> findListByUsername(String username); // 컬렉션 반환
+    Member findMemberByUsername(String username); // 단건 반환
+    Optional<Member> findOptionalByUsername(String username); // 단건 Optional 반환
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -150,6 +149,24 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    public void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        // 반환 타입을 다르게 하여 편하게 사용 가능
+        // 1. 존재하지 않을 경우 NULL
+        // 2. 단건 조회시 결과물이 2개 이상인 경우, 예외가 발생한다. NonUniqueResultException
+        Member findMember = memberRepository.findMemberByUsername("AAA");
+        System.out.println("findMember = " + findMember);
+
+        // 주의 : 반환 결과가 없는 경우, NULL이 아닌 EMPTY를 반환한다.
+        // 컬렉션을 반환받는 경우, 빈 컬렉션을 반환받는다.
+        // 결론 : 자바8 이상 환경에서 가급적 Optional을 사용하도록 한다.
     }
 
 }

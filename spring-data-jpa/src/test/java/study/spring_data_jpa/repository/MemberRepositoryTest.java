@@ -242,4 +242,37 @@ class MemberRepositoryTest {
         // then
         assertThat(resultCount).isEqualTo(3); // 20, 21, 40
     }
+
+    @Test
+    public void findMemberLazy() {
+        // given
+        // member1 -> TeamA
+        // member2 -> TeamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        // 우선 member만 가져온다.(team은 지연로딩)
+        // EntityManager를 사용하면 편하게 패치 조인을 할 수 있다.
+        List<Member> members = memberRepository.findAll();
+
+        // member와 연관관계를 맺고 있는 Team은 LAZY로 지연로딩 되어있기 때문에 N+1문제가 발생한다.
+        // Member 조회 + Member와 연관된 팀 조회
+        // 패치조인을 하게되면 조인 후, Select 절에 우리가 원하는 쿼리를 삽입 할 수 있다.
+        for (Member member : members) {
+            System.out.println("member = " + member.getUsername());
+            // Team의 name에 접근하기 위해 Team을 조회하는 쿼리가 한번 씩 더 나가게 된다.
+            // (member 조회시, team은 지연로딩되기 때문 => team의 실제 값에 접근하려는 순간 쿼리가 나간다.)
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+        }
+    }
 }

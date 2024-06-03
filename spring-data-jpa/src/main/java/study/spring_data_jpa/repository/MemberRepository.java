@@ -2,6 +2,7 @@ package study.spring_data_jpa.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -69,4 +70,27 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Modifying(clearAutomatically = true) // 쿼리 수행 이후 영속성 컨텍스트를 비운다.(em.clear() 수행)
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     int bulkAgePlus(@Param("age") int age);
+
+    // FETCH  => N+1 문제 해결 => LAZY 되어있는 연관 엔티티에 대해, 즉시 로딩과 같은 효과를 볼 수 있다.
+    // 한번의 조회로 모든 값을 조회할 수 있다 => 조인한 테이블을 가져오기 때문
+
+    // 1. JPQL 방식
+    // 단점 : 쿼리를 작성해야 한다는 번거로움
+    @Query("select m from Member m left join fetch m.team")
+    List<Member> findMemberFetchJoin();
+
+    // 2. EntityGraph 방식
+    // 기존의 findAll을 Override하여 작성
+    @Override
+    @EntityGraph(attributePaths = {"team"}) // Member의 연관 엔티티중 team을 조인해서 가져온다.
+    List<Member> findAll();
+
+    // 3. 혼합 방법 JPQL + EntityGraph
+    // @Query 메소드와 EntityGraph를 통합하여 사용 가능
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    @EntityGraph(attributePaths = ("team"))
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
 }

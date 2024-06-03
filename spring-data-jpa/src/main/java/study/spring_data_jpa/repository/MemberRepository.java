@@ -3,6 +3,7 @@ package study.spring_data_jpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.spring_data_jpa.dto.MemberDto;
@@ -61,4 +62,11 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
 
     // 스프링 데이터 JPA 페이징과 정렬
     Page<Member> findByAge(int age, Pageable pageable); // Pageable에는 반환타입에 대한 조건 설정, 반환타입은 Page
+
+    // DATA JPA에서의 벌크성 쿼리
+    // 벌크연산은 영속성 컨텍스트를 무시하고 연산을 수행한다. => Modifying에 clear옵션을 주면 영속성 컨텍스트를 비워준다.
+    // 수정 쿼리의 경우 Modifying을 적어줘야한다.
+    @Modifying(clearAutomatically = true) // 쿼리 수행 이후 영속성 컨텍스트를 비운다.(em.clear() 수행)
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
 }

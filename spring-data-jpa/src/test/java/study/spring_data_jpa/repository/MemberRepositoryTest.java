@@ -1,5 +1,8 @@
 package study.spring_data_jpa.repository;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +31,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     public void testMember() {
@@ -210,5 +215,31 @@ class MemberRepositoryTest {
         assertThat(page.isFirst()).isTrue(); // 현재 페이지가 첫 페이지인지 True, False
         assertThat(page.hasNext()).isTrue(); // 다음 페이지가 있는지 True, False
 
+    }
+
+
+    @Test
+    public void bulkUpdate() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20); // 변경된 수 반환
+        entityManager.flush(); // 즉시 반영 (현재까지 쌓인 쿼리를 모두 반영한다. => 클리어 이전에 수행)
+        entityManager.clear(); // 벌크 연산 이후에는 영속성 컨텍스트를 초기화한다.(벌크 연산은 영속성 컨텍스트의 엔티티를 무시하고 직접적으로 쿼리를 날리므로)
+
+        // 벌크연산은 영속성 컨텍스트를 변환시키지 않는다.
+        // => 즉 member5 객체에서의 나이는 여전히 40이다.(벌크 연산에 의해 41이 되어야 함에도 불구하고)
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0); // Member(id = 5, username = "member5", agg = 40)
+        // 벌크연산은 영속성 컨텍스트를 무시하고 DB에 직접적으로 쿼리를 수행하며, 영속성 컨텍스트는 변경사항을 알지못함
+        // 따라서 벌크연산 이후에는 영속성 컨텍스트를 모두 날리는 것이 좋다.
+
+        // then
+        assertThat(resultCount).isEqualTo(3); // 20, 21, 40
     }
 }

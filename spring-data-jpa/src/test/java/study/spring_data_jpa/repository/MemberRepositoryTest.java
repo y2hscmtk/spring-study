@@ -305,4 +305,13 @@ class MemberRepositoryTest {
         List<Member> result
                 = memberRepository.findLockByUsername("member1");
     }
+
+    @Test
+    public void callCustom() {
+        // 인터페이스가 인터페이스를 상속받는 구조,
+        // SpringDataJPA 인터페이스가 상속받은 인터페이스는 다른 구현체에서 구현되어있다.
+        // 구현체의 이름은 MemberRepository + Impl 로 지어야 한다.
+        // 자바에 의한 구현이 아닌, 스프링 데이터 JPA에 의해 구현체를 엮어 주기 때문에 이와 같은 형태로 사용가능
+        List<Member> memberCustom = memberRepository.findMemberCustom();
+    }
 }

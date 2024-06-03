@@ -14,7 +14,7 @@ import lombok.*;
 )
 // JPA 표준 스펙
 // @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member {
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue

@@ -275,4 +275,34 @@ class MemberRepositoryTest {
             System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
         }
     }
+
+    @Test
+    public void queryHint() {
+        // given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        entityManager.flush(); // 영속성 컨텍스트 동기화
+        entityManager.clear(); // 영속성 컨텍스트 초기화
+
+        // when
+        // ReadOnly설정이 true이기 때문에, 내부적으로 변경이 되지 않는다고 가정하고, 스냅샷을 만들지 않는다.
+        // => 메모리 관리에 용이하다.
+        // 조회 전용인 경우, 수정이 발생할 필요가 없기 때문
+        Member findMember = memberRepository.findReadOnlyByUsername("member1");
+        findMember.setUsername("member2"); // // 영속화된 엔티티 변경사항 발생
+
+        entityManager.flush(); // => 더티채킹에 의해 update 쿼리 생성
+    }
+
+    @Test
+    public void lock() {
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        entityManager.flush();
+        entityManager.clear();
+
+        // JPA가 제공하는 Lock을 편리하게 사용할 수 있다.
+        // 실시간 트래픽이 많은 서비스에서는 가급적이면 사용하지 말아야 한다.
+        List<Member> result
+                = memberRepository.findLockByUsername("member1");
+    }
 }

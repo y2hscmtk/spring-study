@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id","username","age"}) // 연관관계 필드는 무한루프를 야기하므로 toString사용시 제외한다.
 @Table(name = "MEMBER")

@@ -19,8 +19,9 @@ import java.util.Optional;
  * 조회해야 하는 요소가 2개 이상이라면(매개변수가 2개 이상이라면) 쿼리를 사용하는 것을 추천한다.
  * */
 
-// Repository 어노테이션을 적지 않아도 괜찮다, 사용자 정의 레파지토리를 사용하기 위해 정의한 인터페이스를 상속받는다
-public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepositoryCustom {
+// Repository 어노테이션을 적지 않아도 괜찮다, 사용자 정의 레파지토리를 사용하기 위해 정의한 인터페이스를 상속받는다.
+// JpaSpecification 은 실무에서 잘 쓰이지 않는다. => 사용하지 말것
+public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepositoryCustom, JpaSpecificationExecutor<Member> {
     // 쿼리 메소드
     //List<Member> findByUsername(String username); // 별도로 구현하지 않아도 Spring Data JPA에 의해 구현된다.
 

@@ -3,6 +3,7 @@ package study.spring_data_jpa.repository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -313,5 +315,27 @@ class MemberRepositoryTest {
         // 구현체의 이름은 MemberRepository + Impl 로 지어야 한다.
         // 자바에 의한 구현이 아닌, 스프링 데이터 JPA에 의해 구현체를 엮어 주기 때문에 이와 같은 형태로 사용가능
         List<Member> memberCustom = memberRepository.findMemberCustom();
+    }
+
+    @Test
+    public void specBasic() {
+        //given
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        entityManager.persist(m1);
+        entityManager.persist(m2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        MemberSpec.username("m1").and(MemberSpec.username("m1").and(MemberSpec.teamName("teamA")));
+        List<Member> result = memberRepository.findAll();
+
+        assertThat(result.size()).isEqualTo(1);
+
     }
 }

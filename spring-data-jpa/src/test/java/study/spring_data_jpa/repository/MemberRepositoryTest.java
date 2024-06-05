@@ -7,9 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.spring_data_jpa.dto.MemberDto;
@@ -337,5 +335,53 @@ class MemberRepositoryTest {
 
         assertThat(result.size()).isEqualTo(1);
 
+    }
+
+    @Test
+    public void queryByExample() {
+        //given
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        entityManager.persist(m1);
+        entityManager.persist(m2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        // m1을 조회하고 싶은 상황, 조건이 다양할때
+        // Probe
+        // 객체 자체가 검색 조건이된다. 검색하고 싶은 엔티티의 속성을 객체에 할당하고, 해당 객체로 쿼리를 날릴 수 있다.
+        Member member = new Member("m1");
+
+        // 복잡한 검색조건인 경우, 예) 회원들 중 팀(연관관계)이 모두 teamA인 객체를 조회하고 싶은 경우(조인 필요)
+        // => Member 객체와 Team객체를 만들어 실제 관계 설정 후 Example로 넘겨주면 된다.
+        Team team = new Team("teamA");
+        member.setTeam(team); // m1이면서 teamA인 엔티티를 얻고 싶으므로.. => inner join 쿼리가 생성된다.
+
+        // 문제점
+        // 객체를 바탕으로 검색조건을 만들기 때문에, 객체의 필드들 중 개발자가 넣지 않은 속성에 대해서는 무시하도록 설정해주어야한다.
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("age"); // age라는 속성은 무시하도록 설정한다.
+
+        Example<Member> example = Example.of(member,matcher);
+
+        // Spring Data JPA의 기본 스펙에 의해 Query By Example을 사용할 수 있다.
+        List<Member> result = memberRepository.findAll(example);
+
+        assertThat(result.get(0).getUsername()).isEqualTo("m1");
+
+        // 장점
+        // 1. 동적쿼리를 편리하게 처리
+        // 2. 도메인 객체를 그대로 사용
+        // 3. 스프링 데이터 JPA 인터페이스에 기본으로 포함되어 있다.
+
+        // 단점
+        // 1. 조인은 가능하지만 INNER JOIN만 가능하고 OUTER JOIN은 불가능
+        // 2. 매칭 조건이 매우 단순하다.
+        // 3. 중첩 제약조건은 사용 불가능
     }
 }

@@ -12,6 +12,12 @@ spring:
 #        show_sql : true
         format_sql: true
 
+  # 페이징 쿼리시 글로벌 설정
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 2000
 logging:
   level:
     org.hibernate.SQL: debug # 로그 파일로 문제 상황 기록

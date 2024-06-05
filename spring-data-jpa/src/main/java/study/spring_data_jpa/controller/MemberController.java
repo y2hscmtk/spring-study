@@ -2,9 +2,13 @@ package study.spring_data_jpa.controller;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import study.spring_data_jpa.dto.MemberDto;
 import study.spring_data_jpa.entity.Member;
 import study.spring_data_jpa.repository.MemberRepository;
 
@@ -12,6 +16,7 @@ import study.spring_data_jpa.repository.MemberRepository;
 @RequiredArgsConstructor
 public class MemberController {
 
+    // 컨버팅을 사용하기 위해선, Controller 코드 내부에 Repository를 빈으로 갖고 있어야 한다.
     private final MemberRepository memberRepository;
 
     @GetMapping("members/{id}")
@@ -33,9 +38,31 @@ public class MemberController {
         return member.getUsername();
     }
 
-    // 테스트용 데이터 삽입
+    @GetMapping("members")
+    // 필요하다면 @PageableDefault를 통해 기본 값 설정이 가능하다.
+    public Page<MemberDto> list(@PageableDefault(size = 5,sort = "username") Pageable pageable) {
+        // 어떠한 Spring Data JPA 쿼리일지라도 pageable을 넘기면 된다.
+        // api 요청시에는 평범한 GET 매핑으로 localhost:8080/members를 요청하면 된다.
+        // 추가적으로 페이징 쿼리가 필요할 경우 파라미터로 page,size,sort등을 요청할 수 있다.
+        // http 요청이 들어올 때 스프링부트에 의해 Pageable 인터페이스가 구현되어 사용된다.
+        Page<Member> page = memberRepository.findAll(pageable);// pagingSortingRepository ~
+        // 반환타입이 Page<Member>이기 때문에 엔티티 스펙이 그대로 노출된다. => DTO 변환을 하는 것이 좋다.
+        Page<MemberDto> map = page.map(m -> new MemberDto(m.getId(), m.getUsername(), null));
+
+        return map;
+
+//        return memberRepository.findAll(pageable)
+//                .map(MemberDto::new);
+
+        // Pageable pageable을 사용하지 않고 PageRequest.of를 선언하는 방법도 있다.
+    }
+
+
+    //테스트용 데이터 삽입
     @PostConstruct
     public void init() {
-        memberRepository.save(new Member("AAA"));
+        for (int i = 0; i < 100; i++) {
+            memberRepository.save(new Member("user" + i,i));
+        }
     }
 }

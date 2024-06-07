@@ -107,9 +107,18 @@ public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepo
     // UsernameOnly 인터페이스의 구현체에 프록시 객체가 담겨서 반환된다.
     List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
 
-    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);
+//    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);
+//
+//    // 제네릭으로 동적 쿼리 작성 가능 => 받아올 데이터의 형태를 제네릭으로 설정 가능하다.
 
-    // 제네릭으로 동적 쿼리 작성 가능 => 받아올 데이터의 형태를 제네릭으로 설정 가능하다.
-    <T> List<T> findProjectionsGenericByUsername(@Param("username") String username, Class<T> type);
+//    <T> List<T> findProjectionsGenericByUsername(@Param("username") String username, Class<T> type);
+    // Native Query는 웬만하면 사용하지 말아야한다.
+    @Query(value = "select * from member where username = ?",nativeQuery = true)
+    Member findByNativeQuery(String username);
 
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName " +
+            "from member m left join team t",
+            countQuery = "select count(*) from member",
+            nativeQuery = true)
+    Page<MemberProjection> findByNativeProjection(Pageable pageable);
 }

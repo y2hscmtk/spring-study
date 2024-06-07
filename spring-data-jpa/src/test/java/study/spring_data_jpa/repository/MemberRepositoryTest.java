@@ -384,4 +384,61 @@ class MemberRepositoryTest {
         // 2. 매칭 조건이 매우 단순하다.
         // 3. 중첩 제약조건은 사용 불가능
     }
+
+    // Projections 테스트
+    @Test
+    public void projections() {
+        // given
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        entityManager.persist(m1);
+        entityManager.persist(m2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+
+        // interface proejection
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly.getUsername());
+        }
+
+        // class projections
+        // 프록시 객체가 아닌 dto를 얻어온다.
+        // dto 생성자의 파라미터 이름을 바탕으로 쿼리문을 생성하기 때문에, 파라미터 이름을 잘 설정해야 한다.
+        // 현재 스프링 부트 버전으로 인한 오류가 존재함 => 추후 프로젝트 사용시 다른방법이 있는지 고려
+        List<UsernameOnlyDto> dtoResult = memberRepository.findProjectionsDtoByUsername("m1");
+
+        for (UsernameOnlyDto usernameOnlyDto : dtoResult) {
+            System.out.println("usernameOnlyDto.getUsername() = " + usernameOnlyDto.getUsername());
+        }
+
+        // 제네릭을 사용하여 동적 프로젝션도 가능
+        List<UsernameOnlyDto> genericResult
+                = memberRepository.findProjectionsGenericByUsername("m1", UsernameOnlyDto.class);
+
+        for (UsernameOnlyDto usernameOnlyDto : genericResult) {
+            System.out.println("usernameOnlyDto.getUsername() = " + usernameOnlyDto.getUsername());
+        }
+
+        // 회원과 연관된 팀 객체에 대한 조회도 가능할까? => 중첩 테스트(NestedClosedProjections)
+        List<NestedCloseProjections> nestedResult
+                = memberRepository.findProjectionsGenericByUsername("m1", NestedCloseProjections.class);
+
+        // 쿼리를 살펴보면 Member의 경우 username만 특정하여 쿼리를 생성한다.
+        // 하지만, 연관된 Team의 경우 getTeam()에 의해 팀의 모든 속성을 조회하는 쿼리를 생성한다.(팀의 이름만 얻어오는 것이 목표였음에도 불구하고)
+        // => 결론 : 중첩된 객체의 경우, 최적화 쿼리를 생성할 수 없다.(join을 통한 안정성은 보장한다.)
+        for (NestedCloseProjections nestedCloseProjections : nestedResult) {
+            System.out.println("nestedCloseProjections.getUsername() = " + nestedCloseProjections.getUsername());
+            System.out.println("nestedCloseProjections.getTeam().getName() = " + nestedCloseProjections.getTeam().getName());
+        }
+
+
+    }
 }

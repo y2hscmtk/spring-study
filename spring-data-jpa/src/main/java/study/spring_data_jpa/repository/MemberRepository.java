@@ -101,4 +101,15 @@ public interface MemberRepository extends JpaRepository<Member,Long>, MemberRepo
     // select for update
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
+
+    // 프로젝션 사용
+    // 반환 타입에 정의한 인터페이스를 작성한다.
+    // UsernameOnly 인터페이스의 구현체에 프록시 객체가 담겨서 반환된다.
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);
+
+    // 제네릭으로 동적 쿼리 작성 가능 => 받아올 데이터의 형태를 제네릭으로 설정 가능하다.
+    <T> List<T> findProjectionsGenericByUsername(@Param("username") String username, Class<T> type);
+
 }

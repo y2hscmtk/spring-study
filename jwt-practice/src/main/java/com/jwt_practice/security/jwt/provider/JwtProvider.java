@@ -1,6 +1,6 @@
-package com.jwt_practice.util.jwt.provider;
+package com.jwt_practice.security.jwt.provider;
 
-import com.jwt_practice.util.jwt.dto.JwtToken;
+import com.jwt_practice.security.jwt.dto.JwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

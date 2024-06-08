@@ -1,4 +1,4 @@
-package com.jwt_practice.util.jwt.dto;
+package com.jwt_practice.security.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

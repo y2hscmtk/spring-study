@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
     // 토큰 유효기간 설정용
     private static final long ACCESS_TOKEN_VALIDITY = 86400000L; // 1 day
     private static final long REFRESH_TOKEN_VALIDITY = 2592000000L; // 30 days
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 
     // application.properties에서 복호화키(secret)를 얻어와 key에 저장한다.
     // import org.springframework.beans.factory.annotation.Value; 임에 주의
-    public JwtTokenProvider(@Value("${jwt.token.key}") String secretKey) {
+    public JwtProvider(@Value("${jwt.token.key}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }

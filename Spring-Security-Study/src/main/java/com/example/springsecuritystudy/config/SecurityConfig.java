@@ -4,12 +4,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 // 커스텀 인증과 인가를 위한 구성파일
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 활성화
 public class SecurityConfig {
+
+    // 비밀번호 암호화를 위한 빈 생성
+    @Bean // 빈으로 등록시킴으로서 어디서든 사용할 수 있게된다.
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     // 필터 빈 생성
     @Bean

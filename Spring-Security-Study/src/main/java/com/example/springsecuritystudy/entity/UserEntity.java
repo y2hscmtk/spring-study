@@ -1,9 +1,6 @@
 package com.example.springsecuritystudy.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,6 +14,7 @@ public class UserEntity {
     @Id @GeneratedValue
     private Long id;
 
+    @Column(unique = true) // 중복 방지용
     private String username;
     private String password;
 

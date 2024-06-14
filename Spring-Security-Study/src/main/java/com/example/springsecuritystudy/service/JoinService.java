@@ -19,6 +19,12 @@ public class JoinService {
     // 회원가입 진행
     public void joinProcess(JoinDTO joinDTO) {
 
+        // 회원 중복 검증
+        boolean isUser = userRepository.existsByUsername(joinDTO.getUsername());
+        if (isUser) {
+            return;
+        }
+
         // 저장할 사용자 생성
         UserEntity user = UserEntity.builder()
                 .username(joinDTO.getUsername())

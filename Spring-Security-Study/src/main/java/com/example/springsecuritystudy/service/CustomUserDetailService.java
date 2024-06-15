@@ -18,6 +18,8 @@ public class CustomUserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     // UserDetailsService 를 구체화한다.
+    // username => 사용자 이름에 해당한다.
+    // => 데이터베이스에 접근하여 인증(로그인)절차를 수행한다.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return null;

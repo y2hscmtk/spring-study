@@ -29,7 +29,7 @@ public class JoinService {
         UserEntity user = UserEntity.builder()
                 .username(joinDTO.getUsername())
                 .password(passwordEncoder.encode(joinDTO.getPassword())) // 비밀번호 암호화
-                .role("ROLE_USER") // 권한 부여시 "ROLE_" 접두사를 앞에 붙여주어야 한다.
+                .role("ROLE_ADMIN") // 권한 부여시 "ROLE_" 접두사를 앞에 붙여주어야 한다.
                 .build();
 
         userRepository.save(user);

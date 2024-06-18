@@ -1,22 +1,39 @@
 package com.example.new_jwt_practice.config;
 
+import com.example.new_jwt_practice.jwt.LoginFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity // 시큐리티를 위한 구성파일임을 알림
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    // AuthenticationManager의 AuthenticationConfiguration에서 사용하기 위함
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     // 사용자 비밀번호를 관리하기 위한 암호화 클래스
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // 커스텀한 UsernamePasswordAuthentication Filter에서 사용하기 위해 Authentication 빈 등록
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -45,12 +62,22 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
+        // 커스텀한 UsernamePasswordAuthenticationFilter를 사용하도록 알림
+        // addFilterAt : 해당 필터를 대체한다.(그 자리를 대체한다.)
+        // addFilterAt의 2번째 인자는 어떤 위치를 대체할것인지 해당 필터를 작성한다.(이 경우 Username.. Filter)
+        http
+                .addFilterAt(new LoginFilter
+                                (authenticationManager(authenticationConfiguration)),
+                        UsernamePasswordAuthenticationFilter.class);
+
         // 가장 중요
         // JWT 방식에서는 세션을 Stateless 상태로 관리하게 됨(서버 세션에 저장하지 않음)
         // 따라서 세션을 STATELESS 상태로 설정 해주어야 한다.
         http
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
 
         return http.build();
     }

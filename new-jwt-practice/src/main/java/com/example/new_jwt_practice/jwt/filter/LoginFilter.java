@@ -1,4 +1,4 @@
-package com.example.new_jwt_practice.jwt;
+package com.example.new_jwt_practice.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -52,7 +52,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain, Authentication authResult) throws IOException, ServletException {
-
+        System.out.println("success!");
     }
 
     // 로그인 실패시 실행
@@ -62,6 +62,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
-
+        System.out.println("fail!");
     }
 }

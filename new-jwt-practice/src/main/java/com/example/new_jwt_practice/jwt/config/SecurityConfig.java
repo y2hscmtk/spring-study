@@ -1,6 +1,6 @@
-package com.example.new_jwt_practice.config;
+package com.example.new_jwt_practice.jwt.config;
 
-import com.example.new_jwt_practice.jwt.LoginFilter;
+import com.example.new_jwt_practice.jwt.filter.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

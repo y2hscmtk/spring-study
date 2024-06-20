@@ -18,7 +18,7 @@ public class JwtUtil {
     private SecretKey secretKey;
 
     // application.properties에 저장된 시크릿키를 대상으로 객체 키 생성
-    public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
+    public JwtUtil(@Value("${spring.jpa.secret}") String secret) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 

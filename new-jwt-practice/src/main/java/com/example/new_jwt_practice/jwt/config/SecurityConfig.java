@@ -1,6 +1,7 @@
 package com.example.new_jwt_practice.jwt.config;
 
 import com.example.new_jwt_practice.jwt.filter.LoginFilter;
+import com.example.new_jwt_practice.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,10 @@ public class SecurityConfig {
 
     // AuthenticationManager의 AuthenticationConfiguration에서 사용하기 위함
     private final AuthenticationConfiguration authenticationConfiguration;
+
+    // LoginFilter의 RequireArgsConstructor에 의해 생성자 주입이 발생,
+    // 따라서 SecurityConfig에서 LoginFilter 생성자 호출시 JwtUtil 주입 필요
+    private final JwtUtil jwtUtil;
 
     // 사용자 비밀번호를 관리하기 위한 암호화 클래스
     @Bean
@@ -67,7 +72,7 @@ public class SecurityConfig {
         // addFilterAt의 2번째 인자는 어떤 위치를 대체할것인지 해당 필터를 작성한다.(이 경우 Username.. Filter)
         http
                 .addFilterAt(new LoginFilter
-                                (authenticationManager(authenticationConfiguration)),
+                                (authenticationManager(authenticationConfiguration),jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
 
         // 가장 중요

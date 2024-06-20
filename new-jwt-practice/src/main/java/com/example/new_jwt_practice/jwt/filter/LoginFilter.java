@@ -1,17 +1,25 @@
 package com.example.new_jwt_practice.jwt.filter;
 
+import com.example.new_jwt_practice.jwt.dto.CustomUserDetails;
+import com.example.new_jwt_practice.jwt.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // 폼 로그인 방식의 경우 스프링 시큐리티 필터들 중 UsernamePasswordAuthenticationFilter에 의해 수행된다.
 // 해당 필터는 AuthenticationManager를 사용하여 사용자의 인증절차를 수행하는데
@@ -22,6 +30,9 @@ import java.io.IOException;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager; // 인증 절차를 수행할 때 사용
+
+    // 사용자 로그인 성공시 JWT 토큰을 발급해주기 위해 JwtUtil을 주입받는다.
+    private final JwtUtil jwtUtil;
 
     @Override
     public Authentication attemptAuthentication(
@@ -52,16 +63,31 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("success!");
+
+        // 로그인 성공시, 사용자에게 토큰 발급
+        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
+        // 사용자 이름 추출
+        String username = customUserDetails.getUsername();
+        // 사용자 권한 추출
+        Collection<? extends GrantedAuthority> authorities = customUserDetails.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        GrantedAuthority auth = iterator.next();
+        String role = auth.getAuthority();
+
+        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10L);
+
+        // HTTP 반환 헤더에 "Authorization" 키 값으로 토큰 반환
+        response.addHeader("Authorization","Bearer " + token);
+
     }
 
     // 로그인 실패시 실행
-
     @Override
     protected void unsuccessfulAuthentication(
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
-        System.out.println("fail!");
+        // 실패 코드 반환
+        response.setStatus(401);
     }
 }

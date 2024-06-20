@@ -1,5 +1,6 @@
 package com.example.new_jwt_practice.jwt.config;
 
+import com.example.new_jwt_practice.jwt.filter.JWTFilter;
 import com.example.new_jwt_practice.jwt.filter.LoginFilter;
 import com.example.new_jwt_practice.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -75,14 +76,16 @@ public class SecurityConfig {
                                 (authenticationManager(authenticationConfiguration),jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
 
+        // 로그인 필터 앞에 JWT 검증용 필터 추가
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
         // 가장 중요
         // JWT 방식에서는 세션을 Stateless 상태로 관리하게 됨(서버 세션에 저장하지 않음)
         // 따라서 세션을 STATELESS 상태로 설정 해주어야 한다.
         http
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-
 
         return http.build();
     }

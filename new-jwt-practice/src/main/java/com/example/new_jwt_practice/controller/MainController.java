@@ -1,6 +1,5 @@
 package com.example.new_jwt_practice.controller;
 
-import com.example.new_jwt_practice.entity.Member;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.Authentication;

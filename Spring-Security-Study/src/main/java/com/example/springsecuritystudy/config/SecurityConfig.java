@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth // 람다 식으로 작성 해야함
                         // 루트 디렉토리, login 디렉토리는 모두 허용(인증 필요x)
-                        .requestMatchers("/", "/login","/loginProc","/join","/joinProc").permitAll()
+                        .requestMatchers("/", "/login", "/loginProc", "/join", "/joinProc").permitAll()
                         // admin 페이지는 인증된 사용자가 ADMIN 권한을 갖고 있어야함(인가)
                         .requestMatchers("/admin").hasRole("ADMIN")
                         // my경로 이후의 모든 경로에 대해 ADMIN 혹은 USER권한 보유시 접근 가능

@@ -1,5 +1,6 @@
 package com.example.Spring_OAuth2_session.service;
 
+import com.example.Spring_OAuth2_session.dto.CustomOAuth2User;
 import com.example.Spring_OAuth2_session.dto.GoogleResponse;
 import com.example.Spring_OAuth2_session.dto.NaverResponse;
 import com.example.Spring_OAuth2_session.dto.OAuth2Response;
@@ -31,8 +32,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        // 나머지 구현
-        return null;
+        // Spring Security 의 UserDetails에 해당
 
+        // 기본 권한이 있다고 가정
+        String role = "ROLE_USER";
+
+        return new CustomOAuth2User(oAuth2Response,role);
     }
 }

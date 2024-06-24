@@ -15,4 +15,8 @@ public class Member { // OAuth2 로그인에 성공한 회원을 저장하기 �
     private String username;
     private String email;
     private String role;
+
+    public void changeEmail(String email) {
+        this.email = email;
+    }
 }

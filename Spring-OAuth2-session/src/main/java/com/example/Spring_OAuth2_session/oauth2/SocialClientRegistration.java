@@ -1,5 +1,6 @@
 package com.example.Spring_OAuth2_session.oauth2;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
@@ -8,15 +9,27 @@ import org.springframework.stereotype.Component;
 // OAuth2 구성 정보를 Client Registration을 사용하여 관리
 // 각 소셜 네트워크에 대한 설정 정보를 application.properties가 아닌 컴포넌트를 사용하여 인메모리에 등록하여 사용할 수 있다.
 // 일반적으로 application.properties가 아닌 이와 같은 방식으로 관리한다.
-// @Component
+@Component
 public class SocialClientRegistration {
+
+    @Value("${oauth2.naver.id}")
+    private String naverId;
+
+    @Value("${oauth2.naver.secret}")
+    private String naverSecret;
+
+    @Value("${oauth2.google.id}")
+    private String googleId;
+
+    @Value("${oauth2.google.secret}")
+    private String googleSecret;
 
     public ClientRegistration naverClientRegistration() {
 
         // 소셜 네트워크 API 로부터 발급받은 id과 secret으로 대체하여 작성한다
         return ClientRegistration.withRegistrationId("naver")
-                .clientId("아이디")
-                .clientSecret("비밀번호")
+                .clientId(naverId)
+                .clientSecret(naverSecret)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .scope("name", "email")
@@ -30,8 +43,8 @@ public class SocialClientRegistration {
     public ClientRegistration googleClientRegistration() {
 
         return ClientRegistration.withRegistrationId("google")
-                .clientId("아이디")
-                .clientSecret("비밀번호")
+                .clientId(googleId)
+                .clientSecret(googleSecret)
                 .redirectUri("http://localhost:8080/login/oauth2/code/google")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .scope("profile", "email")

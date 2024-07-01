@@ -1,9 +1,12 @@
 package com.example.Spring_OAuth2_session.config;
 
+import com.example.Spring_OAuth2_session.oauth2.CustomClientRegistrationRepo;
+import com.example.Spring_OAuth2_session.oauth2.CustomOAuth2AuthorizedClientService;
 import com.example.Spring_OAuth2_session.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomClientRegistrationRepo customClientRegistrationRepo;
+    private final CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService;
+    private final JdbcTemplate jdbcTemplate;
 
     // 시큐리티 필터 활성화
     @Bean
@@ -30,6 +36,10 @@ public class SecurityConfig {
         http
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login") // oauth2 커스텀 로그인 페이지 등록
+                        .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
+                        .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(
+                                jdbcTemplate,
+                                customClientRegistrationRepo.clientRegistrationRepository()))
                         .userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService)));
 

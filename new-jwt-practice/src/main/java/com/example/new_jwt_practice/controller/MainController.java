@@ -41,7 +41,8 @@ public class MainController {
 
     // Controller단에서 사용자 정보를 추출하는 2번째 방법
     @GetMapping("/main2")
-    public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getUserInfoByUserDetails(
+            @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
@@ -51,5 +52,12 @@ public class MainController {
         return ResponseEntity.ok(memberInfo);
     }
 
+    // CustomUserDetails에 작성해둔 getMemberInfo()를 사용하여 중복을 줄일 수 있다.
+    @GetMapping("/main3")
+    public ResponseEntity<?> getUserInfoByCustomUserDetails(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        MemberInfo memberInfo = userDetails.getMemberInfo();
+        return ResponseEntity.ok(memberInfo);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.new_jwt_practice.jwt.dto;
 
+import com.example.new_jwt_practice.dto.MemberInfo;
 import com.example.new_jwt_practice.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,5 +37,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return member.getUsername();
+    }
+
+    // 사용자 정보 반환
+    public MemberInfo getMemberInfo() {
+        return MemberInfo.builder()
+                .username(member.getUsername())
+                .role(member.getRole())
+                .build();
     }
 }

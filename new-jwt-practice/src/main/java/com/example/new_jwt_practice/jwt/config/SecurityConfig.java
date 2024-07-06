@@ -37,7 +37,6 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     // 커스텀한 UsernamePasswordAuthentication Filter에서 사용하기 위해 Authentication 빈 등록
     @Bean
     public AuthenticationManager authenticationManager(

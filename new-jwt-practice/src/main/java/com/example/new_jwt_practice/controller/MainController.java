@@ -1,10 +1,15 @@
 package com.example.new_jwt_practice.controller;
 
+import com.example.new_jwt_practice.dto.MemberInfo;
+import com.example.new_jwt_practice.jwt.dto.CustomUserDetails;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,16 +19,8 @@ import java.util.Iterator;
 @RestController
 public class MainController {
 
-    @Data
-    @Builder
-    public static class MemberInfo {
-        private String username; // 사용자 이름
-        private String role; // 권한
-    }
-
-
-    @GetMapping("/")
-    public MemberInfo mainP() {
+    @GetMapping("/main1")
+    public ResponseEntity<?> mainP() {
         // JWT는 STATELESS한 방식으로 구동되긴 하지만 일시적으로 세션을 만들어 사용한다.
         // 따라서 세션을 통해 JWT에 내포된 사용자 정보를 추출할 수 있다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -39,6 +36,20 @@ public class MainController {
                 .role(authority)
                 .build();
 
-        return memberInfo;
+        return ResponseEntity.ok(memberInfo);
     }
+
+    // Controller단에서 사용자 정보를 추출하는 2번째 방법
+    @GetMapping("/main2")
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        String role = userDetails.getAuthorities().iterator().next().getAuthority();
+
+        MemberInfo memberInfo =
+                MemberInfo.builder().username(username).role(role).build();
+
+        return ResponseEntity.ok(memberInfo);
+    }
+
+
 }

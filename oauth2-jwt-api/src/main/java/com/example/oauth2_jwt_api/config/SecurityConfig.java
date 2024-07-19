@@ -1,5 +1,7 @@
 package com.example.oauth2_jwt_api.config;
 
+import com.example.oauth2_jwt_api.jwt.JWTUtil;
+import com.example.oauth2_jwt_api.oauth.CustomSuccessHandler;
 import com.example.oauth2_jwt_api.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
+    private final JWTUtil jwtUtil;
 
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // api 서버이므로 csrf 공격에 비교적 안전하다.
@@ -29,8 +33,8 @@ public class SecurityConfig {
         http
                 .oauth2Login(oauth2 -> oauth2.
                         userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))); // 작성한 OAuth2 서비스 등록
-
+                                .userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler)); // 작성한 OAuth2 서비스 등록, 커스텀 핸들러 등록
         // 경로별 인가작업
         http
                 .authorizeHttpRequests(auth -> auth

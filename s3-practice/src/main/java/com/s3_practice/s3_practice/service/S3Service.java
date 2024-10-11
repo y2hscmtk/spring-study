@@ -39,8 +39,15 @@ public class S3Service {
         return fileUrl.toString();
     }
 
-    // 파일 다운로드 메서드
+    // 파일 다운로드 메서드 - 직접 다운로드
+    // -> 이미지를 파일로 다운할 수 있는 다운로드 링크를 제공한다.
     public byte[] downloadFile(String fileName) throws IOException {
         return s3Client.getObject(bucket, fileName).getObjectContent().readAllBytes();
+    }
+
+    // 파일 URL 반환 메서드 - 프론트에서 랜더링
+    // -> 프론트엔드에서 이미지를 렌더링 할 수 있도록, S3 링크를 제공한다.
+    public String getFileUrl(String fileName) {
+        return s3Client.getUrl(bucket, fileName).toString();
     }
 }

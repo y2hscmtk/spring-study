@@ -26,7 +26,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
-    private final ObjectMapper mapper;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     // 현재 연결된 세션들
     private final Set<WebSocketSession> sessions = new HashSet<>();

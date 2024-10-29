@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     public ResponseEntity<?> join(MemberJoinDto memberJoinDto) {
         // 예외처리 코드는 편의상 생략
         Member newMember = Member.builder()

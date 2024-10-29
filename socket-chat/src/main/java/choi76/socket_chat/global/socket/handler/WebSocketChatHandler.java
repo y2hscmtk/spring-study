@@ -72,7 +72,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 //        if (chatRoomSession.size()>=3) {
 //            removeClosedSession(chatRoomSession);
 //        }
-        sendMessageToChatRoom(chatMessageDto, chatRoomSession); //
+        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
     }
 
     // 소켓 종료 확인
@@ -102,4 +102,9 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             log.error(e.getMessage(), e);
         }
     }
+
+    public Set<WebSocketSession> getChatRoomSessions(Long chatRoomId) {
+        return chatRoomSessionMap.getOrDefault(chatRoomId, new HashSet<>());
+    }
+
 }

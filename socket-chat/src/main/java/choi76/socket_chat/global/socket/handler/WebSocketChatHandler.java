@@ -4,6 +4,7 @@ import choi76.socket_chat.domain.chat.entity.Chat;
 import choi76.socket_chat.domain.chat.entity.ChatRoom;
 import choi76.socket_chat.domain.chat.repository.ChatRepository;
 import choi76.socket_chat.domain.chat.repository.ChatRoomRepository;
+import choi76.socket_chat.domain.chat.service.ChatRoomMemberService;
 import choi76.socket_chat.domain.chat.service.ChatService;
 import choi76.socket_chat.domain.member.repository.MemberRepository;
 import choi76.socket_chat.global.socket.dto.ChatMessageDto;
@@ -35,10 +36,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
     private final ObjectMapper mapper;
-    private final ChatRepository chatRepository;
-    private final ChatRoomRepository chatroomRepository;
-    private final MemberRepository memberRepository;
     private final ChatService chatService;
+    private final ChatRoomMemberService chatRoomMemberService;
 
     // 현재 연결된 세션들
     private final Set<WebSocketSession> sessions = new HashSet<>();
@@ -71,15 +70,23 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
         boolean isSuccess = true;
         // 입장의 경우
-        if (chatMessageDto.getMessageType().equals(MessageType.ENTER)) {
+        if (chatMessageDto.getMessageType().equals(MessageType.CONNECT)) {
             chatRoomSession.add(session);
             // 재입장 여부 확인 & 입장 성공 여부 확인
             isSuccess = chatService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
+            log.info("{} 연결/입장", session.getId());
         } // 퇴장의 경우
         else if (chatMessageDto.getMessageType().equals(MessageType.EXIT)) {
             chatRoomSession.remove(session);
             sessions.remove(session);
+            chatRoomMemberService.removeMemberFromChatRoom(chatRoomId, chatMessageDto.getSenderId());
             log.info("{} 퇴장", session.getId());
+        } // 소켓 연결 해제의 경우
+        else if (chatMessageDto.getMessageType().equals(MessageType.DISCONNECT)) {
+            chatRoomSession.remove(session);
+            sessions.remove(session);
+            log.info("{} 소켓 연결 해제", session.getId());
+            isSuccess = false; // 연결 해제의 경우 별도의 메시지를 저장할 필요 없음
         }
 
         if (isSuccess) {

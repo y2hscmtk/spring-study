@@ -68,5 +68,10 @@ public class ChatRoom {
         return false;
     }
 
+    // 채팅방 멤버에서 제거
+    public void removeMember(ChatRoomMember chatRoomMember) {
+        this.chatRoomMembers.remove(chatRoomMember);
+    }
+
 
 }

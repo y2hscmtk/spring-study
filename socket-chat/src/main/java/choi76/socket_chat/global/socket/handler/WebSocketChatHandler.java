@@ -2,11 +2,8 @@ package choi76.socket_chat.global.socket.handler;
 
 import choi76.socket_chat.domain.chat.entity.Chat;
 import choi76.socket_chat.domain.chat.entity.ChatRoom;
-import choi76.socket_chat.domain.chat.repository.ChatRepository;
-import choi76.socket_chat.domain.chat.repository.ChatRoomRepository;
 import choi76.socket_chat.domain.chat.service.ChatRoomMemberService;
-import choi76.socket_chat.domain.chat.service.ChatService;
-import choi76.socket_chat.domain.member.repository.MemberRepository;
+import choi76.socket_chat.domain.chat.service.ChatRoomService;
 import choi76.socket_chat.global.socket.dto.ChatMessageDto;
 import choi76.socket_chat.global.socket.dto.ChatMessageDto.MessageType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +15,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -36,7 +32,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
     private final ObjectMapper mapper;
-    private final ChatService chatService;
+    private final ChatRoomService chatRoomService;
     private final ChatRoomMemberService chatRoomMemberService;
 
     // 현재 연결된 세션들
@@ -73,7 +69,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         if (chatMessageDto.getMessageType().equals(MessageType.CONNECT)) {
             chatRoomSession.add(session);
             // 재입장 여부 확인 & 입장 성공 여부 확인
-            isSuccess = chatService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
+            isSuccess = chatRoomService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
             log.info("{} 연결/입장", session.getId());
         } // 퇴장의 경우
         else if (chatMessageDto.getMessageType().equals(MessageType.EXIT)) {
@@ -90,12 +86,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         }
 
         if (isSuccess) {
-            ChatRoom chatRoom = chatService.findChatRoomWithMembers(chatRoomId);
+            ChatRoom chatRoom = chatRoomService.findChatRoomWithMembers(chatRoomId);
             Chat newChat = Chat.builder()
                     .chatRoom(chatRoom)
                     .message(chatMessageDto.getMessage())
                     .build();
-            chatService.saveChatMessage(newChat);
+            chatRoomService.saveChatMessage(newChat);
             sendMessageToChatRoom(chatMessageDto, chatRoomSession);
         }
 

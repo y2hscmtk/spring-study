@@ -16,7 +16,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     private final WebSocketHandler webSocketHandler;
 
-    // ws://localhost:9090/ws/chat 를 통해 클라이언트 - 서버 소켓 연결
+    // ws://localhost:8080/ws/chat 를 통해 클라이언트 - 서버 소켓 연결
     // setAllowedOrigins("*") -> 모든 ip에 대해서 소켓 접속 허용
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

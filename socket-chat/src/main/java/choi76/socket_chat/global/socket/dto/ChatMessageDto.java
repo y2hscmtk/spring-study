@@ -14,7 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChatMessageDto {
     public enum MessageType{
-        ENTER, TALK // ENTER : 채팅방 입장, TALK : 채팅
+        // ENTER : 채팅방 입장,
+        // TALK : 채팅 전송
+        // EXIT : 연결 끊기
+        ENTER, TALK, EXIT
     }
     private MessageType messageType; // 메시지 타입
     private Long chatRoomId; // 방 번호

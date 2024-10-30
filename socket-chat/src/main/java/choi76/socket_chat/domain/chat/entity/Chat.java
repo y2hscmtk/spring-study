@@ -1,6 +1,5 @@
 package choi76.socket_chat.domain.chat.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +24,11 @@ public class Chat {
     private String message;
 
     // 연관 관계 매핑
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "chatroom_id", nullable = false)
-    private Chatroom chatroom;
+    private ChatRoom chatRoom;
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
 }

@@ -1,6 +1,13 @@
 package choi76.socket_chat.global.socket.handler;
 
+import choi76.socket_chat.domain.chat.entity.Chat;
+import choi76.socket_chat.domain.chat.entity.ChatRoom;
+import choi76.socket_chat.domain.chat.repository.ChatRepository;
+import choi76.socket_chat.domain.chat.repository.ChatRoomRepository;
+import choi76.socket_chat.domain.chat.service.ChatService;
+import choi76.socket_chat.domain.member.repository.MemberRepository;
 import choi76.socket_chat.global.socket.dto.ChatMessageDto;
+import choi76.socket_chat.global.socket.dto.ChatMessageDto.MessageType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +17,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,7 +34,11 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+    private final ChatRepository chatRepository;
+    private final ChatRoomRepository chatroomRepository;
+    private final MemberRepository memberRepository;
+    private final ChatService chatService;
 
     // 현재 연결된 세션들
     private final Set<WebSocketSession> sessions = new HashSet<>();
@@ -50,28 +62,31 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload {}", payload);
         ChatMessageDto chatMessageDto = mapper.readValue(payload, ChatMessageDto.class);
-        log.info("session {}", chatMessageDto.toString());
 
-        // 채팅방 아이디 확인
         Long chatRoomId = chatMessageDto.getChatRoomId();
-        // 메모리 상에 채팅방(chatRoomId)에 대한 세션 확인, 없다면 생성
-        if(!chatRoomSessionMap.containsKey(chatRoomId)){
-            chatRoomSessionMap.put(chatRoomId,new HashSet<>());
+        if (!chatRoomSessionMap.containsKey(chatRoomId)) {
+            chatRoomSessionMap.put(chatRoomId, new HashSet<>());
         }
-
-        // 채팅방 세션 얻어오기
         Set<WebSocketSession> chatRoomSession = chatRoomSessionMap.get(chatRoomId);
 
-        // message 에 담긴 타입을 확인
-        // ENTER 타입의 경우 -> 채팅방에 새로 입장했음을 의미
-        // TALK 타입의 경우 -> 채팅 전송을 의미
-        if (chatMessageDto.getMessageType().equals(ChatMessageDto.MessageType.ENTER)) {
-            chatRoomSession.add(session); // 요청한 사용자 세션 저장 -> 채팅방 접속
+        // 입장의 경우
+        if (chatMessageDto.getMessageType().equals(MessageType.ENTER)) {
+            chatRoomSession.add(session);
+            chatService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
+        } // 퇴장의 경우
+        else if (chatMessageDto.getMessageType().equals(MessageType.EXIT)) {
+            chatRoomSession.remove(session);
+            sessions.remove(session);
+            log.info("{} 퇴장", session.getId());
         }
-        // 1 : 1 채팅인 경우
-//        if (chatRoomSession.size()>=3) {
-//            removeClosedSession(chatRoomSession);
-//        }
+
+        ChatRoom chatRoom = chatService.findChatRoomWithMembers(chatRoomId);
+        Chat newChat = Chat.builder()
+                .chatRoom(chatRoom)
+                .message(chatMessageDto.getMessage())
+                .build();
+        chatService.saveChatMessage(newChat);
+
         sendMessageToChatRoom(chatMessageDto, chatRoomSession);
     }
 
@@ -79,7 +94,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // TODO Auto-generated method stub
-        log.info("{} 연결 끊김", session.getId());
+        log.info("{} 연결 끊김 - Status: {}", session.getId(), status);
         sessions.remove(session);
     }
 
@@ -102,9 +117,4 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             log.error(e.getMessage(), e);
         }
     }
-
-    public Set<WebSocketSession> getChatRoomSessions(Long chatRoomId) {
-        return chatRoomSessionMap.getOrDefault(chatRoomId, new HashSet<>());
-    }
-
 }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -52,7 +53,7 @@ public class ChatRoom {
         }
     }
 
-    public void addMember(Member member) {
+    public boolean addMember(Member member) {
         // 중복 참여 방지 : 같은 아이디의 회원이 존재하는지 확인
         boolean alreadyExists = chatRoomMembers.stream()
                 .anyMatch(crm -> Objects.equals(crm.getMember().getId(), member.getId()));
@@ -62,7 +63,9 @@ public class ChatRoom {
                     .member(member)
                     .build();
             this.chatRoomMembers.add(newMember);
+            return true;
         }
+        return false;
     }
 
 

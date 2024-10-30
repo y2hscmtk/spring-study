@@ -69,10 +69,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         }
         Set<WebSocketSession> chatRoomSession = chatRoomSessionMap.get(chatRoomId);
 
+        boolean isSuccess = true;
         // 입장의 경우
         if (chatMessageDto.getMessageType().equals(MessageType.ENTER)) {
             chatRoomSession.add(session);
-            chatService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
+            // 재입장 여부 확인 & 입장 성공 여부 확인
+            isSuccess = chatService.addMemberToChatRoom(chatRoomId, chatMessageDto.getSenderId());
         } // 퇴장의 경우
         else if (chatMessageDto.getMessageType().equals(MessageType.EXIT)) {
             chatRoomSession.remove(session);
@@ -80,14 +82,16 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             log.info("{} 퇴장", session.getId());
         }
 
-        ChatRoom chatRoom = chatService.findChatRoomWithMembers(chatRoomId);
-        Chat newChat = Chat.builder()
-                .chatRoom(chatRoom)
-                .message(chatMessageDto.getMessage())
-                .build();
-        chatService.saveChatMessage(newChat);
+        if (isSuccess) {
+            ChatRoom chatRoom = chatService.findChatRoomWithMembers(chatRoomId);
+            Chat newChat = Chat.builder()
+                    .chatRoom(chatRoom)
+                    .message(chatMessageDto.getMessage())
+                    .build();
+            chatService.saveChatMessage(newChat);
+            sendMessageToChatRoom(chatMessageDto, chatRoomSession);
+        }
 
-        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
     }
 
     // 소켓 종료 확인

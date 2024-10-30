@@ -39,11 +39,11 @@ public class ChatService {
         return chatRoom;
     }
 
-    public void addMemberToChatRoom(Long chatRoomId, Long memberId) {
+    public boolean addMemberToChatRoom(Long chatRoomId, Long memberId) {
         ChatRoom chatRoom = findChatRoomWithMembers(chatRoomId);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found for id: " + memberId));
-        chatRoom.addMember(member);
+        return chatRoom.addMember(member);
     }
 
     public void saveChatMessage(Chat chat) {

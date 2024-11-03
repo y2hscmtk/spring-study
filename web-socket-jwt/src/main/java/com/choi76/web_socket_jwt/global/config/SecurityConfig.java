@@ -54,10 +54,8 @@ public class SecurityConfig {
         // 경로별 인가 설정
         http
                 .authorizeHttpRequests(auth -> auth
-                        // login, root, join 경로의 요청에 대해서는 모두 허용
+                        .requestMatchers("/ws/chat").permitAll() // 소켓 요청 경로 접근 허용
                         .requestMatchers("api/member/login", "api/member/join").permitAll()
-                        .requestMatchers("/test").hasRole("ADMIN")
-                        // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
                 );
         // JWT 방식에서 세션은 STATELESS 상태로 관리됨

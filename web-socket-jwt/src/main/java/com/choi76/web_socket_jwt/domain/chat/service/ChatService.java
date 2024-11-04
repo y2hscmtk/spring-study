@@ -53,7 +53,6 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("Chat room not found"));
 
-        // 중복 회원 방지 로직 작성 필요
         Optional<ChatRoomMember> membership = chatRoomMemberRepository.findByChatRoomIdAndMemberId(
                 chatRoomId, memberId);
 

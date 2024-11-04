@@ -42,6 +42,7 @@ public class ChatService {
 
         chatMessageRepository.save(chatMessage);
 
+        // topic/chatroom/{chatRoomId} 를 구독한 Client 들에게 새로운 데이터 전송
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoom.getId(), messageDTO);
     }
 
@@ -67,8 +68,24 @@ public class ChatService {
 
         chatRoomMemberRepository.save(chatRoomMember);
 
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId,
-                member.getEmail() + " has entered the chat.");
+        // 채팅방 입장 메시지 생성
+        ChatMessage enterMessage = ChatMessage.builder()
+                .chatRoom(chatRoom)
+                .sender(member)
+                .content(member.getEmail() + " 님이 입장하셨습니다.")
+                .build();
+
+        // 채팅방 반환용 메시지
+        ChatMessageDTO message = ChatMessageDTO.builder()
+                .chatRoomId(chatRoomId)
+                .senderId(memberId)
+                .content(member.getEmail() + " 님이 입장하셨습니다.")
+                .build();
+
+        chatMessageRepository.save(enterMessage);
+
+
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, message);
     }
 
     @Transactional
@@ -77,9 +94,30 @@ public class ChatService {
                 .findByChatRoomIdAndMemberId(chatRoomId, memberId)
                 .orElseThrow(() -> new RuntimeException("Chat room member not found"));
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+
         chatRoomMemberRepository.delete(chatRoomMember);
 
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId,
-                chatRoomMember.getMember().getEmail() + " has left the chat.");
+        // 채팅방 퇴장 메시지 생성
+        ChatMessage exitMessage = ChatMessage.builder()
+                .chatRoom(chatRoom)
+                .sender(member)
+                .content(member.getEmail() + " 님이 퇴장 하셨습니다.")
+                .build();
+
+        // 채팅방 반환용 메시지
+        ChatMessageDTO message = ChatMessageDTO.builder()
+                .chatRoomId(chatRoomId)
+                .senderId(memberId)
+                .content(chatRoomMember.getMember().getEmail() + " 님이 퇴장하셨습니다.")
+                .build();
+
+        chatMessageRepository.save(exitMessage);
+
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, message);
     }
 }

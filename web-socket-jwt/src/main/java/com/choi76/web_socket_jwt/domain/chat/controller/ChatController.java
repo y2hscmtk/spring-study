@@ -16,13 +16,19 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/enter/{chatRoomId}/")
+    /**
+     * 채팅방 회원 가입 - 최초 입장
+     */
+    @PostMapping("/enter/{chatRoomId}")
     public void enterChatRoom(@PathVariable Long chatRoomId,
                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         chatService.enterChatRoom(chatRoomId, userDetails.getEmail());
     }
 
-    @PostMapping("/exit/{chatRoomId}/")
+    /**
+     * 채팅방 회원 탈퇴
+     */
+    @PostMapping("/exit/{chatRoomId}")
     public void exitChatRoom(@PathVariable Long chatRoomId,
                              @AuthenticationPrincipal CustomUserDetails userDetails) {
         chatService.exitChatRoom(chatRoomId, userDetails.getEmail());
@@ -34,6 +40,15 @@ public class ChatController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllChatRooms() {
         return chatRoomService.getAllChatRooms();
+    }
+
+    /**
+     * 채팅방 회원 여부 반환
+     */
+    @GetMapping("/{chatRoomId}/membership-check")
+    public ResponseEntity<?> membershipCheck(@PathVariable Long chatRoomId,
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return chatRoomService.membershipCheck(chatRoomId,userDetails.getEmail());
     }
 }
 

@@ -56,7 +56,7 @@ public class ChatService {
                 chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
 
         if (membership.isPresent()) {
-            throw new RuntimeException("이미 채팅방에 소속된 회원입니다.");
+            throw new GeneralException(ErrorStatus.CHAT_ROOM_MEMBER_ALREADY_EXISTS);
         }
 
         ChatRoomMember chatRoomMember = ChatRoomMember.builder()

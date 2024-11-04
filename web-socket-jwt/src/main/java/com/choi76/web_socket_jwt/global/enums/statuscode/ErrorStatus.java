@@ -14,6 +14,7 @@ public enum ErrorStatus implements BaseCode {
 
 	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHATROOM4001", "해당하는 채팅방을 찾을 수 없습니다."),
 	CHAT_ROOM_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBESHIP4001", "해당하는 채팅방 회원을 찾을 수 없습니다."),
+	CHAT_ROOM_MEMBER_ALREADY_EXISTS(HttpStatus.NOT_FOUND, "MEMBESHIP4002", "이미 채팅방에 소속된 회원입니다."),
 
 	// Member Error
 	MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "해당하는 사용자를 찾을 수 없습니다."),

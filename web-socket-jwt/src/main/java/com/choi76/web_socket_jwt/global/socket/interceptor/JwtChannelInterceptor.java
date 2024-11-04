@@ -1,6 +1,7 @@
 package com.choi76.web_socket_jwt.global.socket.interceptor;
 
 import com.choi76.web_socket_jwt.global.jwt.util.JwtUtil;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -32,9 +33,9 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
             if (authorization != null && authorization.startsWith("Bearer ")) {
                 String token = authorization.substring(7);
                 if (!jwtUtil.isExpired(token)) {
-                    String loginId = jwtUtil.getAllClaims(token).getSubject();
-                    accessor.setUser(() -> loginId);
-                    log.info("User authenticated: {}", loginId);
+                    String email = jwtUtil.getEmail(token); // getEmail 메서드를 통해 이메일 추출
+                    accessor.setUser(() -> email); // Principal 등록
+                    log.info("User authenticated: {}", email);
                 } else {
                     throw new RuntimeException("토큰이 만료되었거나 유효하지 않습니다.");
                 }

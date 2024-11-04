@@ -2,8 +2,10 @@ package com.choi76.web_socket_jwt.domain.chat.controller;
 
 import com.choi76.web_socket_jwt.domain.chat.service.ChatRoomService;
 import com.choi76.web_socket_jwt.domain.chat.service.ChatService;
+import com.choi76.web_socket_jwt.global.jwt.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,14 +16,16 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/enter/{chatRoomId}/{memberId}")
-    public void enterChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
-        chatService.enterChatRoom(chatRoomId, memberId);
+    @PostMapping("/enter/{chatRoomId}/")
+    public void enterChatRoom(@PathVariable Long chatRoomId,
+                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        chatService.enterChatRoom(chatRoomId, userDetails.getEmail());
     }
 
-    @PostMapping("/exit/{chatRoomId}/{memberId}")
-    public void exitChatRoom(@PathVariable Long chatRoomId, @PathVariable Long memberId) {
-        chatService.exitChatRoom(chatRoomId, memberId);
+    @PostMapping("/exit/{chatRoomId}/")
+    public void exitChatRoom(@PathVariable Long chatRoomId,
+                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        chatService.exitChatRoom(chatRoomId, userDetails.getEmail());
     }
 
     /**

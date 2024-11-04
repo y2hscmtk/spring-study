@@ -12,6 +12,9 @@ public enum ErrorStatus implements BaseCode {
 	_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
 	_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHATROOM4001", "해당하는 채팅방을 찾을 수 없습니다."),
+	CHAT_ROOM_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBESHIP4001", "해당하는 채팅방 회원을 찾을 수 없습니다."),
+
 	// Member Error
 	MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "해당하는 사용자를 찾을 수 없습니다."),
 	PASSWORD_NOT_CORRECT(HttpStatus.FORBIDDEN, "MEMBER4002", "비밀번호가 일치하지 않습니다."),

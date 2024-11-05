@@ -5,6 +5,7 @@ import com.choi76.web_socket_jwt.domain.chat.dto.ChatMessageResponseDTO;
 import com.choi76.web_socket_jwt.domain.chat.entity.ChatMessage;
 import com.choi76.web_socket_jwt.domain.chat.entity.ChatRoom;
 import com.choi76.web_socket_jwt.domain.chat.entity.ChatRoomMember;
+import com.choi76.web_socket_jwt.domain.chat.entity.enums.MessageType;
 import com.choi76.web_socket_jwt.domain.chat.repository.ChatMessageRepository;
 import com.choi76.web_socket_jwt.domain.chat.repository.ChatRoomRepository;
 import com.choi76.web_socket_jwt.domain.chat.repository.ChatRoomMemberRepository;
@@ -25,11 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChatService {
 
+    private final MessageType ANNOUNCE_MESSAGE = MessageType.ANNOUNCE;
+    private final MessageType TALK_MESSAGE = MessageType.TALK;
+
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
     private final SimpMessagingTemplate messagingTemplate;
+
+
 
     @Transactional
     public void sendMessage(ChatMessageRequestDTO messageDTO, String email) {
@@ -37,11 +43,13 @@ public class ChatService {
         Member sender = findMemberByEmail(email);
 
         // 저장용 메시지 생성
-        ChatMessage chatMessage = toChatMessage(messageDTO.getContent(), chatRoom, sender);
+        ChatMessage chatMessage =
+                toChatMessage(messageDTO.getContent(), TALK_MESSAGE, chatRoom, sender);
         chatMessageRepository.save(chatMessage);
 
         // 반환용 메시지 생성
-        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(messageDTO.getContent(), sender);
+        ChatMessageResponseDTO responseDto =
+                toChatMessageResponseDto(messageDTO.getContent(), TALK_MESSAGE, sender);
 
         // topic/chatroom/{chatRoomId} 를 구독한 Client 들에게 새로운 데이터 전송
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoom.getId(), responseDto);
@@ -70,10 +78,12 @@ public class ChatService {
 
         // 채팅방 입장 메시지 생성
         String content = sender.getEmail() + " 님이 입장하셨습니다.";
-        ChatMessage enterMessage = toChatMessage(content, chatRoom, sender);
+        ChatMessage enterMessage =
+                toChatMessage(content, ANNOUNCE_MESSAGE, chatRoom, sender);
 
         // 채팅방 반환용 메시지
-        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(content,sender);
+        ChatMessageResponseDTO responseDto =
+                toChatMessageResponseDto(content,ANNOUNCE_MESSAGE, sender);
         chatMessageRepository.save(enterMessage);
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseDto);
@@ -92,11 +102,13 @@ public class ChatService {
 
         // 채팅방 퇴장 메시지 생성 및 저장
         String content = sender.getEmail() + " 님이 퇴장하셨습니다.";
-        ChatMessage exitMessage = toChatMessage(content, chatRoom, sender);
+        ChatMessage exitMessage =
+                toChatMessage(content, ANNOUNCE_MESSAGE, chatRoom, sender);
         chatMessageRepository.save(exitMessage);
 
         // 채팅방 반환용 메시지
-        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(email, sender);
+        ChatMessageResponseDTO responseDto =
+                toChatMessageResponseDto(email, ANNOUNCE_MESSAGE, sender);
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseDto);
     }
@@ -111,17 +123,21 @@ public class ChatService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_ROOM_NOT_FOUND));
     }
 
-    public ChatMessage toChatMessage(String content, ChatRoom chatRoom, Member sender) {
+    public ChatMessage toChatMessage(String content, MessageType messageType,
+                                     ChatRoom chatRoom, Member sender) {
         return ChatMessage.builder()
                 .content(content)
                 .timestamp(LocalDateTime.now())
                 .chatRoom(chatRoom)
                 .sender(sender)
+                .messageType(messageType)
                 .build();
     }
 
-    public ChatMessageResponseDTO toChatMessageResponseDto(String message, Member sender) {
+    public ChatMessageResponseDTO toChatMessageResponseDto(
+            String message, MessageType messageType, Member sender) {
         return ChatMessageResponseDTO.builder()
+                .messageType(messageType)
                 .email(sender.getEmail())
                 .content(message)
                 .build();

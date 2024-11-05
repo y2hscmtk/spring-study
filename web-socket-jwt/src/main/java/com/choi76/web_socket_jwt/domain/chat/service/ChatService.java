@@ -108,7 +108,7 @@ public class ChatService {
 
         // 채팅방 반환용 메시지
         ChatMessageResponseDTO responseDto =
-                toChatMessageResponseDto(email, ANNOUNCE_MESSAGE, sender);
+                toChatMessageResponseDto(content, ANNOUNCE_MESSAGE, sender);
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseDto);
     }

@@ -37,11 +37,11 @@ public class ChatService {
         Member sender = findMemberByEmail(email);
 
         // 저장용 메시지 생성
-        ChatMessage chatMessage = toChatMessage(messageDTO, chatRoom, sender);
+        ChatMessage chatMessage = toChatMessage(messageDTO.getContent(), chatRoom, sender);
         chatMessageRepository.save(chatMessage);
 
         // 반환용 메시지 생성
-        ChatMessageResponseDTO responseDto = toResponseDto(messageDTO.getContent(), sender);
+        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(messageDTO.getContent(), sender);
 
         // topic/chatroom/{chatRoomId} 를 구독한 Client 들에게 새로운 데이터 전송
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoom.getId(), responseDto);
@@ -55,10 +55,12 @@ public class ChatService {
         Optional<ChatRoomMember> membership =
                 chatRoomMemberRepository.findByChatRoomAndMember(chatRoom, sender);
 
+        // 이미 가입된 회원 인지 검사
         if (membership.isPresent()) {
             throw new GeneralException(ErrorStatus.CHAT_ROOM_MEMBER_ALREADY_EXISTS);
         }
 
+        // 채팅방 멤버 생성
         ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                 .chatRoom(chatRoom)
                 .member(sender)
@@ -67,22 +69,14 @@ public class ChatService {
         chatRoomMemberRepository.save(chatRoomMember);
 
         // 채팅방 입장 메시지 생성
-        ChatMessage enterMessage = ChatMessage.builder()
-                .chatRoom(chatRoom)
-                .sender(sender)
-                .content(sender.getEmail() + " 님이 입장하셨습니다.")
-                .build();
+        String content = sender.getEmail() + " 님이 입장하셨습니다.";
+        ChatMessage enterMessage = toChatMessage(content, chatRoom, sender);
 
         // 채팅방 반환용 메시지
-        ChatMessageResponseDTO message = ChatMessageResponseDTO.builder()
-                .email(email)
-                .content(email + " 님이 입장하셨습니다.")
-                .build();
-
+        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(content,sender);
         chatMessageRepository.save(enterMessage);
 
-        log.info(chatRoomId + " room enter : " , message.getContent());
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, message);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseDto);
     }
 
     @Transactional
@@ -93,24 +87,18 @@ public class ChatService {
         ChatRoomMember chatRoomMember = chatRoomMemberRepository.findByChatRoomAndMember(chatRoom,sender)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_ROOM_MEMBER_NOT_FOUND));
 
+        // 채팅방 회원 제거
         chatRoomMemberRepository.delete(chatRoomMember);
 
-        // 채팅방 퇴장 메시지 생성
-        ChatMessage exitMessage = ChatMessage.builder()
-                .chatRoom(chatRoom)
-                .sender(sender)
-                .content(email + " 님이 퇴장 하셨습니다.")
-                .build();
+        // 채팅방 퇴장 메시지 생성 및 저장
+        String content = sender.getEmail() + " 님이 퇴장하셨습니다.";
+        ChatMessage exitMessage = toChatMessage(content, chatRoom, sender);
+        chatMessageRepository.save(exitMessage);
 
         // 채팅방 반환용 메시지
-        ChatMessageResponseDTO message = ChatMessageResponseDTO.builder()
-                .email(email)
-                .content(chatRoomMember.getMember().getEmail() + " 님이 퇴장하셨습니다.")
-                .build();
+        ChatMessageResponseDTO responseDto = toChatMessageResponseDto(email, sender);
 
-        chatMessageRepository.save(exitMessage);
-        log.info(chatRoomId + " room exit : " , message.getContent());
-        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, message);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseDto);
     }
 
     public Member findMemberByEmail(String email) {
@@ -123,16 +111,16 @@ public class ChatService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_ROOM_NOT_FOUND));
     }
 
-    public ChatMessage toChatMessage(ChatMessageRequestDTO dto, ChatRoom chatRoom, Member sender) {
+    public ChatMessage toChatMessage(String content, ChatRoom chatRoom, Member sender) {
         return ChatMessage.builder()
-                .content(dto.getContent())
+                .content(content)
                 .timestamp(LocalDateTime.now())
                 .chatRoom(chatRoom)
                 .sender(sender)
                 .build();
     }
 
-    public ChatMessageResponseDTO toResponseDto(String message, Member sender) {
+    public ChatMessageResponseDTO toChatMessageResponseDto(String message, Member sender) {
         return ChatMessageResponseDTO.builder()
                 .email(sender.getEmail())
                 .content(message)

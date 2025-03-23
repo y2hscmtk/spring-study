@@ -1,6 +1,7 @@
 package com.example.springjwthard.controller;
 
 import com.example.springjwthard.jwt.JWTUtil;
+import com.example.springjwthard.repository.RefreshEntityRepository;
 import com.example.springjwthard.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

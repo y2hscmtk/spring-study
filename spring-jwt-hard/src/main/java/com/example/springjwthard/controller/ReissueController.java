@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ReissueController {
-    private final JWTUtil jwtUtil;
     private final ReissueService reissueService;
 
     @PostMapping("/reissue")

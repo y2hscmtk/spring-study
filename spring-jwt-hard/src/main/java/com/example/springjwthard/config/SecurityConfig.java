@@ -1,5 +1,6 @@
 package com.example.springjwthard.config;
 
+import com.example.springjwthard.jwt.CustomLogoutFilter;
 import com.example.springjwthard.jwt.JWTFilter;
 import com.example.springjwthard.jwt.JWTUtil;
 import com.example.springjwthard.jwt.LoginFilter;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -66,6 +68,8 @@ public class SecurityConfig {
         http
                 .addFilterAt(
                         new LoginFilter(authenticationManager(authenticationConfiguration),refreshEntityRepository, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshEntityRepository), LogoutFilter.class); // 커스텀 로그아웃 필터 추가
 
         //세션 설정
         http

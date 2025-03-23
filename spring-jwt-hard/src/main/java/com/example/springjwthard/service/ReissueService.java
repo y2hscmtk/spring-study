@@ -54,7 +54,13 @@ public class ReissueService {
 
         // access 토큰 재발급
         String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
+        // refresh 토큰 재발급
+        /*
+        * rotate 이전의 refresh 토큰으로도 인증이 되기 때문에, 서버측에서 발급했던 refresh 토큰을 블랙리스트로 관리해야함
+        * */
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
         response.setHeader("access", newAccess);
+        response.addCookie(jwtUtil.createCookie("refresh",newRefresh));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

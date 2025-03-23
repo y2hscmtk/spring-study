@@ -1,6 +1,7 @@
 package com.example.springjwthard.jwt;
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -54,5 +55,14 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value); // key - jwt
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true); // https 설정에 적용하는 경우
+        //cookie.setPath("/");
+        cookie.setHttpOnly(true); // javascript 로 쿠키에 접근하지 못하도록 설정
+        return cookie;
     }
 }

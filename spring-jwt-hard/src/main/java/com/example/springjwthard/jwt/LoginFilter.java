@@ -45,13 +45,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-        // 사용자 정보
+        // 현재 세션 사용자 정보
         String username = authentication.getName();
-
+        // 현재 세션 사용자 권한 추출
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority(); // 사용자 권한
+        String role = auth.getAuthority();
 
         // 토큰 생성
         // access : 10분
@@ -60,7 +60,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // 응답 설정
-        // access -> Header
+        // access -> Headerdd
         response.setHeader("access",access);
         // refresh -> Cookie
         response.addCookie(createCookie("refresh",refresh));
